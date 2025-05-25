@@ -4,6 +4,9 @@
 #include <QtSql/QSqlQuery>
 
 
+DatabaseManager::DatabaseManager() {
+    // Konstruktor-Implementierung (ggf. Initialisierung)
+}
 
 
 bool DatabaseManager::openDatabase(const QString& dbName) {

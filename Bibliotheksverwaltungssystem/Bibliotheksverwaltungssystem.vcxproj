@@ -97,16 +97,16 @@
     <QtMoc Include="Bibliotheksverwaltungssystem.h" />
     <ClCompile Include="Bibliotheksverwaltungssystem.cpp" />
     <ClCompile Include="DatabaseManager.cpp" />
-    <ClCompile Include="LoginDialog.cpp" />
+    <ClCompile Include="LoginWindow.cpp" />
     <ClCompile Include="main.cpp" />
-    <QtUic Include="LoginDialog.ui" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h" />
-    <QtMoc Include="LoginDialog.h" />
+    <QtMoc Include="LoginWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="style.qss" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

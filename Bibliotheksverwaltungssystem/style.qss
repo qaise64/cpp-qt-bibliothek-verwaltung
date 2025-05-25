@@ -1,0 +1,63 @@
+
+
+/* Colors
+ * Orange (Energie):   #FF6F00
+ * Deep Blue (Ruhe):  #457B9D
+ * Warm Yellow:       #FFD166
+ * Turquoise:         #38B6FF
+ * Cool Gray:         #C0C5C9
+ * Ivory:            #FFFFF0
+ */
+
+
+
+QMainWindow {
+    background-color: 	#FFFFF0;
+}
+
+QTabBar#tabBar {
+    background: #457B9D;
+    color: #FFFFF0;
+}
+
+QTabBar#tabBar::tab:selected {
+    background: #FFD166;
+    color: #457B9D;
+}
+
+QPushButton {
+    background-color: #FF6F00;
+    color: #FFFFF0;
+    border: none;
+    padding: 8px 16px;
+}
+
+QPushButton:hover {
+    background-color: #38B6FF;
+}
+
+QPushButton:pressed {
+    background-color: #38B6FF;
+}
+
+
+QPushButton#closeButton {
+    color: #FF6F00;  /* or #C0C5C9 for subtle */
+    font-size: 18px;
+    border: none;
+}
+
+
+QLabel {
+    color: #fff;
+    font-size: 16px;
+}
+
+QLineEdit {
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 4px;
+}
+

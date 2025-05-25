@@ -43,7 +43,7 @@
     <ClCompile Include="DatabaseManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="LoginDialog.cpp">
+    <ClCompile Include="LoginWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,13 +51,16 @@
     <ClInclude Include="DatabaseManager.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="LoginDialog.h">
-      <Filter>include</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="LoginDialog.ui">
-      <Filter>ui</Filter>
-    </QtUic>
+    <QtMoc Include="LoginWindow.h">
+      <Filter>include</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="style.qss">
+      <Filter>src</Filter>
+    </None>
   </ItemGroup>
 </Project>
