@@ -13,51 +13,122 @@
 
 QMainWindow {
     background-color: 	#FFFFF0;
+    font-family: Segoe UI, Arial, sans-serif;
+    font-weight: medium;
+
 }
 
-QTabBar#tabBar {
-    background: #457B9D;
-    color: #FFFFF0;
+QWidget#central {
+    background-color: 	#FFFFF0;
 }
 
-QTabBar#tabBar::tab:selected {
-    background: #FFD166;
-    color: #457B9D;
+QWidget#navBar {
+    background-color: 	#457B9D;
+    color:              #FFFFF0;
+    margin:            0px;
+    padding:           0px;
 }
 
-QPushButton {
-    background-color: #FF6F00;
-    color: #FFFFF0;
-    border: none;
-    padding: 8px 16px;
+QLabel#logoLabel {
+    color:             #FFFFF0;
+    font-size:         18px;
+    font-weight:       bold;
+    margin-left:        10px;
 }
 
-QPushButton:hover {
-    background-color: #38B6FF;
+QWidget#centralWidget {
+    background-color:  #FFFFF0;
+    margin:            0px;
+    padding:           0px;
 }
 
-QPushButton:pressed {
-    background-color: #38B6FF;
+
+QPushButton#userButton {
+    background-color:  #FF6F00;
+    color:             #FFFFF0;
+    font-size:         16px;
+    border-radius:     0px;
+    font-weight:       600; 
+    letter-spacing:    0.5px;
+
+
 }
 
+QPushButton#userButton:hover {
+    background-color:  #FFD166;
+}
+
+QPushButton#userButton:pressed {
+    background-color:  #FF6F00;
+}
+
+QPushButton#librarianButton {
+    background-color:  #38B6FF;
+    color:             #FFFFF0;
+    font-size:         16px;
+    border-radius:     0px;
+    font-weight:       600; 
+    letter-spacing:    0.5px;
+
+
+}
+
+QPushButton#librarianButton:hover {
+    background-color:  #FFD166;
+}
+
+QPushButton#librarianButton:pressed {
+    background-color:  #38B6FF;
+}
+
+QWidget#rightWidget {
+
+    margin:            0px;
+    padding:           0px;
+   
+}
+
+QPushButton#minimizeButton {
+
+    border-radius:     0px;
+    padding:           0px;
+    margin:            0px;
+
+}
+
+QPushButton#minimizeButton:hover {
+
+    background-color:  #FFD166;
+
+}
+
+QPushButton#minimizeButton:pressed {
+
+    background-color:  #C0C5C9;
+
+}
 
 QPushButton#closeButton {
-    color: #FF6F00;  /* or #C0C5C9 for subtle */
-    font-size: 18px;
-    border: none;
+
+    border-radius:     0px;
+    padding:           0px;
+    margin:            0px;
+
+}
+
+QPushButton#closeButton:hover {
+
+    background-color:  #FFD166;
+
+}
+
+QPushButton#closeButton:pressed {
+
+    background-color:  #C0C5C9;
+
 }
 
 
-QLabel {
-    color: #fff;
-    font-size: 16px;
-}
 
-QLineEdit {
-    background: #333;
-    color: #fff;
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 4px;
-}
+
 

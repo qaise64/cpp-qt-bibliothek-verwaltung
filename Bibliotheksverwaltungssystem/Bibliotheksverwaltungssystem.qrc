@@ -1,4 +1,8 @@
 <RCC>
-    <qresource prefix="Bibliotheksverwaltungssystem">
+    <qresource prefix="/">
+        <file>resources/icons/navbar/close.svg</file>
+        <file>resources/icons/navbar/minimize.svg</file>
+        <file>resources/icons/navbar/close2.svg</file>
+        <file>resources/icons/navbar/minimize2.svg</file>
     </qresource>
 </RCC>

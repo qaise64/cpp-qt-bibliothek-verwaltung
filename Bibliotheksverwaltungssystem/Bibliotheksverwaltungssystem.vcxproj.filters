@@ -21,6 +21,12 @@
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
       <Extensions>ui</Extensions>
     </Filter>
+    <Filter Include="resources\icons">
+      <UniqueIdentifier>{68235e1c-6b3e-4dac-8150-0e3a0411cc52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\icons\navbar">
+      <UniqueIdentifier>{3275d887-1036-485e-95e4-f81ade75f3c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Bibliotheksverwaltungssystem.qrc">
@@ -61,6 +67,12 @@
     <None Include="cpp.hint" />
     <None Include="style.qss">
       <Filter>src</Filter>
+    </None>
+    <None Include="G:\Downloads\minimize.svg">
+      <Filter>resources\icons\navbar</Filter>
+    </None>
+    <None Include="G:\Downloads\close.svg">
+      <Filter>resources\icons\navbar</Filter>
     </None>
   </ItemGroup>
 </Project>
