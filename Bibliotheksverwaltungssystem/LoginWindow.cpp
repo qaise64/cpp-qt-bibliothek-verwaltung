@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QSvgRenderer>
+#include <QPainter>
 
 LoginWindow::LoginWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -18,6 +20,7 @@ LoginWindow::LoginWindow(QWidget* parent)
 
     QVBoxLayout* mainLayout = new QVBoxLayout(central);
 	mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
 
 	// Navigation startet hier
 
@@ -36,7 +39,8 @@ LoginWindow::LoginWindow(QWidget* parent)
 	QWidget* CenterWidget = new QWidget();
 	QHBoxLayout* centerLayout = new QHBoxLayout(CenterWidget);
 	centerLayout->setContentsMargins(0, 0, 0, 0);
-	centerLayout->setSpacing(5);
+	centerLayout->setSpacing(15);
+	CenterWidget->setFixedWidth(350);
 
 
 	QPushButton* userButton = new QPushButton("Benutzer");
@@ -78,7 +82,6 @@ LoginWindow::LoginWindow(QWidget* parent)
 	rightLayout->addWidget(minimizeButton);
 	rightLayout->addWidget(closeButton);
 
-	mainLayout->addWidget(navBar);
     navLayout->addWidget(logoLabel);      // Left
     navLayout->addStretch();              // Spacer
     navLayout->addWidget(CenterWidget);   // Center
@@ -88,30 +91,60 @@ LoginWindow::LoginWindow(QWidget* parent)
 
     mainLayout->addWidget(navBar, 0, Qt::AlignTop);
 
-
-
-
     // Navigation endet hier
-
-
-    /*
-
-    navLayout = new QHBoxLayout();
-    closeButton = new QPushButton("✕");
-    closeButton->setFixedSize(30, 30);
-    closeButton->setFlat(true);
-    navLayout->addWidget(closeButton, 0, Qt::AlignLeft);
-    navLayout->addWidget(navBar, 1);
-    mainLayout->addLayout(navLayout);
 
     // 50/50 Layout (Mitte)
     QHBoxLayout* hLayout = new QHBoxLayout();
+    hLayout->setContentsMargins(0, 0, 0, 0);
+
 
     // Linke Seite: Bild
-    imageLabel = new QLabel();
-    imageLabel->setPixmap(QPixmap(":/img/login_photo.jpg").scaled(600, 600, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+	QWidget* leftWidget = new QWidget();
+	leftWidget->setObjectName("leftWidget");
+	leftWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	leftWidget->setMinimumWidth(400);
+
+    QVBoxLayout* leftLayout = new QVBoxLayout(leftWidget);
+
+
+    imageLabel = new QLabel(leftWidget);
+
+
+
+    // Desired size to render the SVG
+    int targetWidth = 1000;
+
+    // Load SVG renderer
+    QSvgRenderer renderer(QString(":/resources/icons/navbar/user.svg"));
+
+    // Calculate target height to keep aspect ratio
+    QSize originalSize = renderer.defaultSize();
+    int targetHeight = (originalSize.height() * targetWidth) / originalSize.width();
+
+    // Prepare a transparent pixmap of target size
+    QPixmap pixmap(targetWidth, targetHeight);
+    pixmap.fill(Qt::transparent);
+
+    // Render SVG into pixmap
+    QPainter painter(&pixmap);
+    renderer.render(&painter);
+
+    // Set pixmap on label
+    imageLabel->setPixmap(pixmap);
     imageLabel->setAlignment(Qt::AlignCenter);
-    hLayout->addWidget(imageLabel, 1);
+    hLayout->addWidget(leftWidget, 1);
+
+    QLabel* willkommenLabel = new QLabel("<b>Willkommen bei LibraryPro</b>");
+    willkommenLabel->setObjectName("willkommenLabel");
+    willkommenLabel->setAlignment(Qt::AlignCenter);
+
+
+    leftLayout->addStretch();
+    leftLayout->addWidget(imageLabel, 0, Qt::AlignHCenter);
+    leftLayout->addWidget(willkommenLabel, 0, Qt::AlignHCenter);
+    leftLayout->addStretch();
+
 
     // Rechte Seite: Login-Formular
     loginFormWidget = new QWidget();
@@ -142,7 +175,6 @@ LoginWindow::LoginWindow(QWidget* parent)
     mainLayout->addLayout(hLayout);
     setCentralWidget(central);
 
-    */
 
     // Vollbild
     showFullScreen();
@@ -150,7 +182,7 @@ LoginWindow::LoginWindow(QWidget* parent)
     // Verbindungen
     connect(loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
     connect(closeButton, &QPushButton::clicked, this, &QWidget::close);
- connect(minimizeButton, &QPushButton::clicked, this, &QWidget::showMinimized);
+    connect(minimizeButton, &QPushButton::clicked, this, &QWidget::showMinimized);
 
 }
 

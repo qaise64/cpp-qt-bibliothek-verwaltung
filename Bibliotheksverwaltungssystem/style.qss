@@ -18,7 +18,7 @@ QMainWindow {
 
 }
 
-QWidget#central {
+QWidget#centralWidget {
     background-color: 	#FFFFF0;
 }
 
@@ -36,49 +36,53 @@ QLabel#logoLabel {
     margin-left:        10px;
 }
 
-QWidget#centralWidget {
-    background-color:  #FFFFF0;
-    margin:            0px;
-    padding:           0px;
-}
-
-
 QPushButton#userButton {
-    background-color:  #FF6F00;
-    color:             #FFFFF0;
-    font-size:         16px;
-    border-radius:     0px;
-    font-weight:       600; 
+    background-color:  #457B9D;    /* Deep Blue */
+    color:             #FFFFF0;    /* Ivory Text */
+    font-size:         14px;
+    border:            2px solid #457B9D;
+    border-radius:     6px;        /* Leicht abgerundet für moderne Optik */
+    font-weight:       bold;
     letter-spacing:    0.5px;
-
-
+    padding:           8px 20px;   /* Mehr Padding für bessere Touch-Targets */
 }
 
 QPushButton#userButton:hover {
-    background-color:  #FFD166;
+    background-color:  #38B6FF;    /* Turquoise für Hover */
+    border-color:      #38B6FF;
+    transform:         translateY(-1px); /* Subtiler Lift-Effekt */
 }
 
 QPushButton#userButton:pressed {
-    background-color:  #FF6F00;
+    background-color:  #FF6F00;    /* Orange für starken Kontrast */
+    border-color:      #FF6F00;
+    transform:         translateY(0px);
 }
 
+/* Bibliothekar Button - Orange für Energie und Aktion */
 QPushButton#librarianButton {
-    background-color:  #38B6FF;
-    color:             #FFFFF0;
-    font-size:         16px;
-    border-radius:     0px;
-    font-weight:       600; 
+    background-color:  transparent; /* Outline-Style für Sekundär-Button */
+    color:             #FF6F00;     /* Orange Text */
+    font-size:         14px;
+    border:            2px solid #FF6F00;
+    border-radius:     6px;
+    font-weight:       bold;
     letter-spacing:    0.5px;
-
-
+    padding:           8px 20px;
 }
 
 QPushButton#librarianButton:hover {
-    background-color:  #FFD166;
+    background-color:  #FF6F00;     /* Gefüllt bei Hover */
+    color:             #FFFFF0;     /* Weiße Schrift bei Hover */
+    border-color:      #FF6F00;
+    transform:         translateY(-1px);
 }
 
 QPushButton#librarianButton:pressed {
-    background-color:  #38B6FF;
+    background-color:  #457B9D;     /* Deep Blue für Pressed */
+    color:             #FFFFF0;
+    border-color:      #457B9D;
+    transform:         translateY(0px);
 }
 
 QWidget#rightWidget {
@@ -126,6 +130,19 @@ QPushButton#closeButton:pressed {
 
     background-color:  #C0C5C9;
 
+}
+
+
+QWidget#leftWidget {
+    background-color:  #FFD166;    
+    margin:       0px;
+}
+
+QWidget#willkommenLabel {
+    color:             #457B9D;    /* Deep Blue */
+    font-size:         32px;
+    font-weight:       bold;
+    margin-left:       20px;
 }
 
 
