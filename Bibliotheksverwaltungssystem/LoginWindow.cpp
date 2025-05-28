@@ -14,55 +14,60 @@
 LoginWindow::LoginWindow(QWidget* parent)
     : QMainWindow(parent)
 {
-    QWidget* central = new QWidget(this);
-    setCentralWidget(central);
-	central->setObjectName("centralWidget");
+    centralWidget = new QWidget(this);
+    setCentralWidget(centralWidget);
+    centralWidget->setObjectName("centralWidget");
 
-    QVBoxLayout* mainLayout = new QVBoxLayout(central);
+    mainLayout = new QVBoxLayout(centralWidget);
 	mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
 	// Navigation startet hier
 
 
-	QWidget* navBar = new QWidget(central);
+	navBar = new QWidget(centralWidget);
     navBar->setFixedHeight(50);
 	navBar->setObjectName("navBar");
     
-	QHBoxLayout* navLayout = new QHBoxLayout(navBar);
+	navLayout = new QHBoxLayout(navBar);
     navBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-	QLabel* logoLabel = new QLabel("<b>LibraryPro</b>");
+	logoLabel = new QLabel("<b>LibraryPro</b>");
     logoLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
 	logoLabel->setObjectName("logoLabel");
 
-	QWidget* CenterWidget = new QWidget();
-	QHBoxLayout* centerLayout = new QHBoxLayout(CenterWidget);
-	centerLayout->setContentsMargins(0, 0, 0, 0);
-	centerLayout->setSpacing(15);
-	CenterWidget->setFixedWidth(350);
+	centerNavWidget = new QWidget();
+	centerNavLayout = new QHBoxLayout(centerNavWidget);
+    centerNavLayout->setContentsMargins(0, 0, 0, 0);
+    centerNavLayout->setSpacing(15);
+    centerNavWidget->setFixedWidth(350);
 
 
-	QPushButton* userButton = new QPushButton("Benutzer");
+	userButton = new QPushButton("Benutzer");
 	userButton->setObjectName("userButton");
-	QPushButton* librarianButton = new QPushButton("Bibliothekar");
+	userButton->setEnabled(false); // Benutzer-Button ist standardmäßig deaktiviert
+	userButton->setFixedHeight(32);
+
+	librarianButton = new QPushButton("Bibliothekar");
     librarianButton->setObjectName("librarianButton");
+	librarianButton->setEnabled(true); // Bibliothekar-Button ist standardmäßig aktiviert
+	librarianButton->setFixedHeight(32);
 
-	centerLayout->addWidget(userButton);
-	centerLayout->addWidget(librarianButton);
-    CenterWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    centerNavLayout->addWidget(userButton);
+    centerNavLayout->addWidget(librarianButton);
+    centerNavWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-	QWidget* RightWidget = new QWidget();
-	QHBoxLayout* rightLayout = new QHBoxLayout(RightWidget);
-	rightLayout->setContentsMargins(0, 0, 0, 0);
-	rightLayout->setSpacing(5);
-    RightWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
-	RightWidget->setObjectName("rightWidget");
-    RightWidget->setMinimumHeight(110);
-    RightWidget->setFixedHeight(30);
+	rightNavWidget = new QWidget();
+	rightNavLayout = new QHBoxLayout(rightNavWidget);
+    rightNavLayout->setContentsMargins(0, 0, 0, 0);
+    rightNavLayout->setSpacing(5);
+    rightNavWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    rightNavWidget->setObjectName("rightWidget");
+    rightNavWidget->setMinimumHeight(110);
+    rightNavWidget->setFixedHeight(30);
 
 
-	QPushButton* minimizeButton = new QPushButton("");
+	minimizeButton = new QPushButton("");
     minimizeButton->setIcon(QIcon(":/resources/icons/navbar/minimize2.svg"));
 	minimizeButton->setObjectName("minimizeButton");
 	minimizeButton->setFixedSize(50,30);
@@ -71,7 +76,8 @@ LoginWindow::LoginWindow(QWidget* parent)
 	minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
 	// Close Button
-	QPushButton* closeButton = new QPushButton("");
+	
+    closeButton = new QPushButton("");
     closeButton->setIcon(QIcon(":/resources/icons/navbar/close2.svg"));
     closeButton->setObjectName("closeButton");
 	closeButton->setFixedSize(50, 30);
@@ -79,14 +85,14 @@ LoginWindow::LoginWindow(QWidget* parent)
 
 	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-	rightLayout->addWidget(minimizeButton);
-	rightLayout->addWidget(closeButton);
+    rightNavLayout->addWidget(minimizeButton);
+    rightNavLayout->addWidget(closeButton);
 
     navLayout->addWidget(logoLabel);      // Left
     navLayout->addStretch();              // Spacer
-    navLayout->addWidget(CenterWidget);   // Center
+    navLayout->addWidget(centerNavWidget);   // Center
     navLayout->addStretch();              // Spacer
-    navLayout->addWidget(RightWidget);    // Right
+    navLayout->addWidget(rightNavWidget);    // Right
 
 
     mainLayout->addWidget(navBar, 0, Qt::AlignTop);
@@ -94,22 +100,22 @@ LoginWindow::LoginWindow(QWidget* parent)
     // Navigation endet hier
 
     // 50/50 Layout (Mitte)
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->setContentsMargins(0, 0, 0, 0);
+    contentLayout = new QHBoxLayout();
+    contentLayout->setContentsMargins(0, 0, 0, 0);
 
 
     // Linke Seite: Bild
 
-	QWidget* leftWidget = new QWidget();
-	leftWidget->setObjectName("leftWidget");
-	leftWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	leftWidget->setMinimumWidth(400);
+	leftContentWidget = new QWidget();
+	leftContentWidget->setObjectName("leftWidget");
+	leftContentWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	leftContentWidget->setMinimumWidth(400);
 
-    QVBoxLayout* leftLayout = new QVBoxLayout(leftWidget);
+    leftContentLayout = new QVBoxLayout(leftContentWidget);
 
 
-    imageLabel = new QLabel(leftWidget);
-
+    imageLabel = new QLabel(leftContentWidget);
+    imageLabel->setAlignment(Qt::AlignCenter);
 
 
     // Desired size to render the SVG
@@ -132,48 +138,69 @@ LoginWindow::LoginWindow(QWidget* parent)
 
     // Set pixmap on label
     imageLabel->setPixmap(pixmap);
-    imageLabel->setAlignment(Qt::AlignCenter);
-    hLayout->addWidget(leftWidget, 1);
 
-    QLabel* willkommenLabel = new QLabel("<b>Willkommen bei LibraryPro</b>");
+    contentLayout->addWidget(leftContentWidget, 1);
+
+    willkommenLabel = new QLabel("<b>Willkommen bei LibraryPro</b>");
     willkommenLabel->setObjectName("willkommenLabel");
     willkommenLabel->setAlignment(Qt::AlignCenter);
 
 
-    leftLayout->addStretch();
-    leftLayout->addWidget(imageLabel, 0, Qt::AlignHCenter);
-    leftLayout->addWidget(willkommenLabel, 0, Qt::AlignHCenter);
-    leftLayout->addStretch();
+    leftContentLayout->addStretch();
+    leftContentLayout->addWidget(imageLabel, 0, Qt::AlignHCenter);
+    leftContentLayout->addWidget(willkommenLabel, 0, Qt::AlignHCenter);
+    leftContentLayout->addStretch();
 
 
     // Rechte Seite: Login-Formular
     loginFormWidget = new QWidget();
-    QVBoxLayout* formLayout = new QVBoxLayout(loginFormWidget);
+    loginFormWidget->setObjectName("loginFormWidget");
+    rightFormLayout = new QVBoxLayout(loginFormWidget);
+    rightFormLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel* userLabel = new QLabel("Benutzername:");
+    // Login-Label oben
+    loginLabel = new QLabel("Login");
+    loginLabel->setObjectName("loginLabel");
+    loginLabel->setAlignment(Qt::AlignHCenter);
+    rightFormLayout->addStretch(2);
+    rightFormLayout->addWidget(loginLabel, 0, Qt::AlignHCenter);
+
+
+    // Formular-Container
+    formContainer = new QWidget();
+    formContainer->setObjectName("formContainer");
+    formContainer->setMinimumWidth(350);
+    formContainer->setMaximumWidth(450);
+    formLayout = new QVBoxLayout(formContainer);
+    formLayout->setAlignment(Qt::AlignHCenter);
+
+    userLabel = new QLabel("Benutzername:");
+	userLabel->setObjectName("userLabel");
     usernameEdit = new QLineEdit();
-    QLabel* passLabel = new QLabel("Passwort:");
+    passLabel = new QLabel("Passwort:");
+	passLabel->setObjectName("passLabel");
     passwordEdit = new QLineEdit();
     passwordEdit->setEchoMode(QLineEdit::Password);
-
     loginButton = new QPushButton("Anmelden");
+	loginButton->setObjectName("loginButton");
+	loginButton->setFixedHeight(45);
 
     formLayout->addWidget(userLabel);
     formLayout->addWidget(usernameEdit);
     formLayout->addWidget(passLabel);
     formLayout->addWidget(passwordEdit);
     formLayout->addSpacing(20);
+    formLayout->addWidget(loginButton);
 
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(loginButton);
-    formLayout->addLayout(buttonLayout);
+    rightFormLayout->addWidget(formContainer, 0, Qt::AlignHCenter);
+    rightFormLayout->addStretch(2); // Für vertikale Zentrierung
 
-    formLayout->addStretch(1);
+    contentLayout->addWidget(loginFormWidget, 1);
 
-    hLayout->addWidget(loginFormWidget, 1);
 
-    mainLayout->addLayout(hLayout);
-    setCentralWidget(central);
+
+    mainLayout->addLayout(contentLayout);
+    setCentralWidget(centralWidget);
 
 
     // Vollbild
@@ -184,7 +211,27 @@ LoginWindow::LoginWindow(QWidget* parent)
     connect(closeButton, &QPushButton::clicked, this, &QWidget::close);
     connect(minimizeButton, &QPushButton::clicked, this, &QWidget::showMinimized);
 
+
+
+    connect(userButton, &QPushButton::clicked, this, [=]() {
+        currentRole = "Benutzer";
+        userButton->setEnabled(false);
+        librarianButton->setEnabled(true);
+        });
+
+    connect(librarianButton, &QPushButton::clicked, this, [=]() {
+        currentRole = "Bibliothekar";
+        userButton->setEnabled(true);
+        librarianButton->setEnabled(false);
+        });
+
 }
+
+QString LoginWindow::getRole() const
+{
+    return currentRole;
+}
+
 
 QString LoginWindow::getUsername() const
 {
@@ -196,12 +243,10 @@ QString LoginWindow::getPassword() const
     return passwordEdit->text();
 }
 
-QString LoginWindow::getRole() const
-{
-    return tabBar->currentIndex() == 0 ? "Benutzer" : "Bibliothekar";
-}
 
 void LoginWindow::onLoginClicked()
 {
     emit loginRequested(getUsername(), getPassword(), getRole());
 }
+
+LoginWindow::~LoginWindow() {}
