@@ -2,6 +2,7 @@
 #include <QtWidgets/QApplication>
 #include "DatabaseManager.h"
 #include "LoginWindow.h"
+#include "MainWindow.h"
 #include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
@@ -21,23 +22,18 @@ int main(int argc, char *argv[])
     db.createTables();
 
     LoginWindow loginWindow;
-    QObject::connect(&loginWindow, &LoginWindow::loginRequested, [&](const QString& username, const QString& password, const QString& role){
-        // Hier später: Authentifizierung gegen die Datenbank
-        if (username == "admin" && password == "admin" && role == "Bibliothekar") {
-            loginWindow.close();
-            Bibliotheksverwaltungssystem w;
-            w.show();
-            a.exec();
-        } else if (username == "user" && password == "user" && role == "Benutzer") {
-            loginWindow.close();
-            Bibliotheksverwaltungssystem w;
-            w.show();
-            a.exec();
-        } else {
-            QMessageBox::warning(&loginWindow, "Login fehlgeschlagen", "Ungültige Zugangsdaten oder Rolle.");
-        }
-    });
+    MainWindow mainWindow;
+
+
+    QObject::connect(&loginWindow, &LoginWindow::loginRequested, [&](const QString& user, const QString& pass, const QString& role) {
+        mainWindow.setRole(role); // setRole musst du in MainWindow implementieren
+        mainWindow.show();
+        loginWindow.close();
+        });
 
     loginWindow.show();
     return a.exec();
+
 }
+
+

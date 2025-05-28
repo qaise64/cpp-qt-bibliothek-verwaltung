@@ -9,6 +9,14 @@
 
 
 
+
+ /*
+ 
+ Login Window
+ 
+ */
+
+
 QMainWindow {
     background-color: 	#FFFFF0;
     font-family: Segoe UI, Arial, sans-serif;
@@ -118,8 +126,25 @@ QWidget#leftWidget {
     margin:       0px;
 }
 
+
+
+QWidget#leftWidgetUser {
+    background-color: #FFD166;
+}
+
+QWidget#leftWidgetLibrarian {
+    background-color: #38B6FF;
+}
+
 QLabel#willkommenLabel {
     color:             #457B9D;    /* Deep Blue */
+    font-size:         32px;
+    font-weight:       bold;
+    margin-left:       20px;
+}
+
+QLabel#willkommenLabelLibrarian {
+    color:             #1d3557;   
     font-size:         32px;
     font-weight:       bold;
     margin-left:       20px;
@@ -187,5 +212,8 @@ QPushButton#loginButton:pressed {
 
 
 
+/* 
+    User window
 
+ */
 

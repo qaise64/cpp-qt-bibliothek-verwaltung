@@ -5,5 +5,6 @@
         <file>resources/icons/navbar/close2.svg</file>
         <file>resources/icons/navbar/minimize2.svg</file>
         <file>resources/icons/navbar/user.svg</file>
+        <file>resources/icons/navbar/librarian.svg</file>
     </qresource>
 </RCC>

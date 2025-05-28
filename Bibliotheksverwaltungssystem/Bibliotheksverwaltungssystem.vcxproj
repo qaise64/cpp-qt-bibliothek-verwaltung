@@ -92,6 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MainWindow.cpp" />
     <QtRcc Include="Bibliotheksverwaltungssystem.qrc" />
     <QtUic Include="Bibliotheksverwaltungssystem.ui" />
     <QtMoc Include="Bibliotheksverwaltungssystem.h" />
@@ -102,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h" />
+    <QtMoc Include="MainWindow.h" />
     <QtMoc Include="LoginWindow.h" />
   </ItemGroup>
   <ItemGroup>

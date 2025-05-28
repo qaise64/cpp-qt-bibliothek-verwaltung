@@ -52,6 +52,9 @@
     <ClCompile Include="LoginWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
@@ -60,6 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="LoginWindow.h">
+      <Filter>include</Filter>
+    </QtMoc>
+    <QtMoc Include="MainWindow.h">
       <Filter>include</Filter>
     </QtMoc>
   </ItemGroup>

@@ -10,6 +10,7 @@
 #include <QPixmap>
 #include <QSvgRenderer>
 #include <QPainter>
+#include <QStyle>
 
 LoginWindow::LoginWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -139,6 +140,44 @@ LoginWindow::LoginWindow(QWidget* parent)
     // Set pixmap on label
     imageLabel->setPixmap(pixmap);
 
+    auto updateLeftPanelAppearance = [&](const QString& role) {
+
+        QString svgPath;
+        QString objectNameForStyle;
+        QString willkommenObjectName;
+
+        if (role == "Benutzer") {
+            svgPath = ":/resources/icons/navbar/user.svg";
+            objectNameForStyle = "leftWidgetUser";
+            willkommenObjectName = "willkommenLabel";
+        }
+        else {
+            svgPath = ":/resources/icons/navbar/librarian.svg";
+            objectNameForStyle = "leftWidgetLibrarian";
+            willkommenObjectName = "willkommenLabelLibrarian"; 
+        }
+
+        QSvgRenderer renderer(svgPath);
+        QSize originalSize = renderer.defaultSize();
+        int targetWidth = 1000;
+        int targetHeight = (originalSize.height() * targetWidth) / originalSize.width();
+        QPixmap pixmap(targetWidth, targetHeight);
+        pixmap.fill(Qt::transparent);
+        QPainter painter(&pixmap);
+        renderer.render(&painter);
+        imageLabel->setPixmap(pixmap);
+
+        leftContentWidget->setObjectName(objectNameForStyle);
+        leftContentWidget->style()->unpolish(leftContentWidget);
+        leftContentWidget->style()->polish(leftContentWidget);
+
+        willkommenLabel->setObjectName(willkommenObjectName);
+        willkommenLabel->style()->unpolish(willkommenLabel);
+
+        willkommenLabel->style()->polish(willkommenLabel);
+
+    };
+
     contentLayout->addWidget(leftContentWidget, 1);
 
     willkommenLabel = new QLabel("<b>Willkommen bei LibraryPro</b>");
@@ -217,12 +256,14 @@ LoginWindow::LoginWindow(QWidget* parent)
         currentRole = "Benutzer";
         userButton->setEnabled(false);
         librarianButton->setEnabled(true);
+        updateLeftPanelAppearance(currentRole);
         });
 
     connect(librarianButton, &QPushButton::clicked, this, [=]() {
         currentRole = "Bibliothekar";
         userButton->setEnabled(true);
         librarianButton->setEnabled(false);
+        updateLeftPanelAppearance(currentRole);
         });
 
 }
@@ -246,7 +287,26 @@ QString LoginWindow::getPassword() const
 
 void LoginWindow::onLoginClicked()
 {
-    emit loginRequested(getUsername(), getPassword(), getRole());
+    QString username = getUsername();
+    QString password = getPassword();
+    QString role = getRole();
+
+    if (role == "Benutzer") {
+        if (username == "user" && password == "user") {
+            emit loginRequested(username, password, role);
+        }
+        else {
+            QMessageBox::warning(this, "Login fehlgeschlagen", "Benutzername oder Passwort ist falsch.");
+        }
+    }
+    else if (role == "Bibliothekar") {
+        if (username == "admin" && password == "admin") {
+            emit loginRequested(username, password, role);
+        }
+        else {
+            QMessageBox::warning(this, "Login fehlgeschlagen", "Benutzername oder Passwort ist falsch.");
+        }
+    }
 }
 
 LoginWindow::~LoginWindow() {}
