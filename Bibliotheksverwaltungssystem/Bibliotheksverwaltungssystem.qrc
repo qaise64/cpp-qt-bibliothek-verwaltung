@@ -6,5 +6,11 @@
         <file>resources/icons/navbar/minimize2.svg</file>
         <file>resources/icons/navbar/user.svg</file>
         <file>resources/icons/navbar/librarian.svg</file>
+        <file>resources/icons/funcbar/book-open-solid.svg</file>
+        <file>resources/icons/funcbar/plus-solid.svg</file>
+        <file>resources/icons/funcbar/right-left-solid.svg</file>
+        <file>resources/icons/funcbar/clipboard-solid.svg</file>
+        <file>resources/icons/funcbar/chart-line-solid.svg</file>
+        <file>resources/icons/funcbar/chart-simple-solid.svg</file>
     </qresource>
 </RCC>

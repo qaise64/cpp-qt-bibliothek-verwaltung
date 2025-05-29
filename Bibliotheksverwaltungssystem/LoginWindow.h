@@ -72,4 +72,8 @@ private:
     QString currentRole = "Benutzer"; 
 
 
+protected:
+    void closeEvent(QCloseEvent* event) override;
+
+
 };

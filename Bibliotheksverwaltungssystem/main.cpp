@@ -6,8 +6,11 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
+#include <QTimer>
 
-int main(int argc, char *argv[])
+MainWindow* g_mainWindow = nullptr;
+
+int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
 
@@ -22,18 +25,21 @@ int main(int argc, char *argv[])
     db.createTables();
 
     LoginWindow loginWindow;
-    MainWindow mainWindow;
-
+    MainWindow mainWindow; 
+    g_mainWindow = &mainWindow;
 
     QObject::connect(&loginWindow, &LoginWindow::loginRequested, [&](const QString& user, const QString& pass, const QString& role) {
-        mainWindow.setRole(role); // setRole musst du in MainWindow implementieren
-        mainWindow.show();
-        loginWindow.close();
-        });
+        mainWindow.setRole(role);
+        mainWindow.showFullScreen();
+        QTimer::singleShot(1000, &loginWindow, &QWidget::hide);
+    });
 
-    loginWindow.show();
-    return a.exec();
+    QObject::connect(&mainWindow, &MainWindow::logoutRequested, [&]() {
+        loginWindow.showFullScreen();
+        QTimer::singleShot(1000, &mainWindow, &QWidget::hide);
+    });
 
+    loginWindow.showFullScreen();
+    int result = a.exec();
+    return result;
 }
-
-

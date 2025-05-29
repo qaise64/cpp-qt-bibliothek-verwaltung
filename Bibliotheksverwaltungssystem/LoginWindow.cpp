@@ -11,6 +11,22 @@
 #include <QSvgRenderer>
 #include <QPainter>
 #include <QStyle>
+#include <QCloseEvent>
+#include <QApplication>
+#include "MainWindow.h"
+#include <QTimer>
+
+extern MainWindow* g_mainWindow;
+
+void LoginWindow::closeEvent(QCloseEvent* event)
+{
+    if (!g_mainWindow || !g_mainWindow->isVisible()) {
+        QApplication::quit();
+    }
+    else {
+        QMainWindow::closeEvent(event);
+    }
+}
 
 LoginWindow::LoginWindow(QWidget* parent)
     : QMainWindow(parent)
@@ -173,7 +189,6 @@ LoginWindow::LoginWindow(QWidget* parent)
 
         willkommenLabel->setObjectName(willkommenObjectName);
         willkommenLabel->style()->unpolish(willkommenLabel);
-
         willkommenLabel->style()->polish(willkommenLabel);
 
     };
