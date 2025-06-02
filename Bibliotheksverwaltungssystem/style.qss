@@ -586,100 +586,172 @@ QLabel[objectName^="sectionTitle"] {
 }
 
 
-/* Verbesserter Stil für das TabWidget in der Ausleihe-Verwaltung */
+/* ===== Tab Widget Styling ===== */
 QTabWidget {
-    background-color: #f5f5f5;
+    background-color: #FFFFF0;  /* Ivory - consistent with main background */
     border: none;
 }
 
 QTabWidget::pane {
-    border: 1px solid #ddd;
-    border-top: none;
-    background-color: #FFFFF0; /* Ivory - konsistent mit Haupthintergrund */
+    border: 1px solid #C0C5C9;  /* Cool Gray for subtle borders */
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    background-color: #FFFFF0;
+    padding: 16px;
 }
 
 QTabBar::tab {
-    background-color: #e0e0e0;
-    color: #457B9D; /* Deep Blue für besseren Kontrast */
-    min-width: 180px; /* Breitere Tabs */
-    padding: 10px 15px;
-    margin-right: 2px;
-    border: 1px solid #ddd;
+    background-color: #FFFFF0;
+    color: #457B9D;
+    min-width: 180px;
+    padding: 12px 20px;
+    margin-right: 4px;
+    border: 1px solid #C0C5C9;
     border-bottom: none;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 QTabBar::tab:selected {
-    background-color: #FFFFF0; /* Ivory */
-    color: #FF6F00; /* Orange für aktiveren Tab */
+    background-color: #457B9D;  /* Deep Blue for active tab */
+    color: #FFFFF0;
     font-weight: bold;
-    border-bottom: none;
+    border-color: #457B9D;
+    padding-bottom: 13px;  /* Overlap with pane border */
 }
 
 QTabBar::tab:hover:!selected {
-    background-color: #FFD166; /* Warm Yellow für Hover */
-    color: #457B9D; /* Deep Blue */
+    background-color: #FFD166;  /* Warm Yellow hover */
+    color: #2c3e50;
+    border-color: #FFD166;
 }
 
-/* Breitere Spalten in Tabellen */
+/* ===== Table Widget Styling ===== */
 QTableWidget {
-    background-color: #FFFFF0; /* Ivory */
-    alternate-background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    gridline-color: #eee;
-    selection-background-color: #e8f0fe;
-    selection-color: #333;
+    background-color: #FFFFF0;
+    alternate-background-color: #f8f9fa;
+    border: 1px solid #C0C5C9;
+    border-radius: 6px;
+    gridline-color: #e8eaed;
+    selection-background-color: #FFD166;
+    selection-color: #2c3e50;
+    font-size: 14px;
 }
 
 QTableWidget::item {
-    padding: 8px;
-    min-width: 120px; /* Mindestbreite für Tabellenzellen */
+    padding: 10px 12px;
+    min-height: 40px;
 }
 
 QTableWidget::item:selected {
-    background-color: #e8f0fe;
-    color: #333;
+    background-color: #FFD166;
+    color: #2c3e50;
+}
+
+QTableWidget::item:hover {
+    background-color: rgba(255, 209, 102, 0.3);  /* Light yellow hover */
 }
 
 QTableWidget QHeaderView::section {
-    background-color: #457B9D; /* Deep Blue */
-    color: #FFFFF0; /* Ivory */
-    padding: 8px;
-    min-width: 120px; /* Mindestbreite für Header */
+    background-color: #457B9D;
+    color: #FFFFF0;
+    padding: 12px 10px;
     border: none;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    border-right: 1px solid rgba(255, 255, 240, 0.2);
     font-weight: bold;
+    font-size: 14px;
 }
 
-/* Verbesserte Button-Stile für bessere Sichtbarkeit */
-QPushButton[objectName="approveButton"] {
-    background-color: #4caf50; /* Grün */
-    color: white;
-    border: 2px solid #45a049; /* Rahmen für bessere Sichtbarkeit */
-    padding: 6px 12px;
-    border-radius: 4px;
+QTableWidget QHeaderView::section:hover {
+    background-color: #38B6FF;  /* Turquoise on hover */
+}
+
+/* ===== Action Buttons Styling ===== */
+#approveButton, QPushButton[objectName="approveButton"] {
+    background-color: #4CAF50;
+    color: #FFFFF0;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
     min-width: 120px;
+    font-size: 15px;
     font-weight: bold;
+    transition: all 0.2s ease;
 }
 
-QPushButton[objectName="approveButton"]:hover {
+#approveButton:hover, QPushButton[objectName="approveButton"]:hover {
     background-color: #45a049;
-    border-color: #2e7d32;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
 
-QPushButton[objectName="rejectButton"] {
-    background-color: #f44336; /* Rot */
-    color: white;
-    border: 2px solid #e53935; /* Rahmen für bessere Sichtbarkeit */
-    padding: 6px 12px;
-    border-radius: 4px;
+#approveButton:pressed, QPushButton[objectName="approveButton"]:pressed {
+    background-color: #388e3c;
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+#rejectButton, #AbbrechenButton, QPushButton[objectName="rejectButton"] {
+    background-color: #FF6F00;  /* Using your Orange color */
+    color: #FFFFF0;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
     min-width: 120px;
+    font-size: 15px;
     font-weight: bold;
+    transition: all 0.2s ease;
 }
 
-QPushButton[objectName="rejectButton"]:hover {
-    background-color: #e53935;
-    border-color: #c62828;
+#rejectButton:hover, #AbbrechenButton:hover, QPushButton[objectName="rejectButton"]:hover {
+    background-color: #e55100;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 111, 0, 0.3);
+}
+
+#rejectButton:pressed, #AbbrechenButton:pressed, QPushButton[objectName="rejectButton"]:pressed {
+    background-color: #cc5200;
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* ===== Secondary Action Buttons ===== */
+QPushButton[objectName="returnButton"] {
+    background-color: #FFD166;
+    color: #2c3e50;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    min-width: 100px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+QPushButton[objectName="returnButton"]:hover {
+    background-color: #ffc947;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(255, 209, 102, 0.4);
+}
+
+/* ===== Disabled State ===== */
+QPushButton:disabled {
+    background-color: #C0C5C9;
+    color: #8a8f94;
+    border: none;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===== Focus States for Accessibility ===== */
+QPushButton:focus {
+    outline: 2px solid #38B6FF;
+    outline-offset: 2px;
+}
+
+QTableWidget:focus {
+    border: 2px solid #457B9D;
 }

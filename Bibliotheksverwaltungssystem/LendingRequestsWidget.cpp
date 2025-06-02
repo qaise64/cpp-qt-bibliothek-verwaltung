@@ -120,11 +120,13 @@ void LendingRequestsWidget::refreshRequests()
         // Zeige unterschiedliche Buttons je nach Status
         if (status == "pending") {
             QPushButton* approveBtn = new QPushButton("Genehmigen");
+			approveBtn->setObjectName("approveButton");
             approveBtn->setProperty("requestId", requests[i]["id"].toInt());
             approveBtn->setFixedHeight(30);
             connect(approveBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onApproveClicked);
 
             QPushButton* rejectBtn = new QPushButton("Ablehnen");
+			approveBtn->setObjectName("rejectButton");
             rejectBtn->setProperty("requestId", requests[i]["id"].toInt());
             rejectBtn->setFixedHeight(30);
             connect(rejectBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onRejectClicked);

@@ -8,6 +8,8 @@ UserLendingsWidget::UserLendingsWidget(DatabaseManager* db, QWidget* parent)
 {
     setupUI();
     refreshLendings();
+    lendingsTable->verticalHeader()->setDefaultSectionSize(40);
+
 }
 
 void UserLendingsWidget::setupUI()
@@ -136,6 +138,7 @@ void UserLendingsWidget::refreshLendings()
         else if (lendings[i]["type"].toString() == "request" && lendings[i]["status"].toString() == "pending") {
             // Bei ausstehenden Anfragen: Abbrechen-Button anzeigen
             QPushButton* cancelBtn = new QPushButton("Abbrechen");
+			cancelBtn->setObjectName("cancelButton");
             cancelBtn->setProperty("requestId", lendings[i]["request_id"].toInt());
             cancelBtn->setFixedHeight(30);
             cancelBtn->setMinimumWidth(120);
