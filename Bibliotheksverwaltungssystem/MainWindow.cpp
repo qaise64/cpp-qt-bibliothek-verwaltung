@@ -4,9 +4,28 @@
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 #include <DatabaseManager.h>
+#include <BooksOverviewWidget.h>
+#include <QMessageBox.h>
+#include <qtimer.h>
+#include <QCloseEvent>
+#include "LendingRequestsWidget.h"
+#include "UserLendingsWidget.h"
+#include <QDateTime>
+#include <QtWidgets/QApplication>
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    // Hier könnten Speicher- oder Aufräumoperationen durchgeführt werden
+
+    // Beende die Anwendung vollständig
+    QApplication::quit();
+
+    // Akzeptiere das Schließen-Event
+    event->accept();
+}
+
+MainWindow::MainWindow(DatabaseManager* db, QWidget* parent)
+    : db(db), QMainWindow(parent)
 {
     centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
@@ -117,6 +136,10 @@ void MainWindow::setupNavbar()
 void MainWindow::clearFunctionBar()
 {
     if (functionBarLayout) {
+        // Funktionsleiste sofort ausblenden
+        if (functionBar)
+            functionBar->setVisible(false);
+
         QLayoutItem* item;
         while ((item = functionBarLayout->takeAt(0)) != nullptr) {
             if (QWidget* w = item->widget()) {
@@ -165,11 +188,14 @@ void MainWindow::setupFunctionBar(const QString& role)
             if (info.objName == "btnAddBook") {
                 connect(btn, &QPushButton::clicked, this, &MainWindow::addBookDialog);
             }
-            // Weitere Buttons:
-            //else if (info.objName == "btnBooksOverview") {
-            //    connect(btn, &QPushButton::clicked, this, &MainWindow::showBooksOverview);
-            //}
 
+            if (info.objName == "btnBooksOverview") {
+                connect(btn, &QPushButton::clicked, this, &MainWindow::showBooksOverview);
+            }
+
+            if (info.objName == "btnManageLendings") {
+                connect(btn, &QPushButton::clicked, this, &MainWindow::showLendingRequests);
+            }
         }
     }
     else {
@@ -188,6 +214,15 @@ void MainWindow::setupFunctionBar(const QString& role)
             btn->setFixedHeight(36);
             functionBarLayout->addWidget(btn);
             functionButtons.append(btn);
+
+            // Verbindungen für die Benutzer-Buttons
+            if (info.objName == "btnBooksOverview") {
+                connect(btn, &QPushButton::clicked, this, &MainWindow::showBooksOverview);
+            }
+
+            if (info.objName == "btnMyLendings") {
+                connect(btn, &QPushButton::clicked, this, &MainWindow::showUserLendings);
+            }
         }
     }
     functionBarLayout->addStretch();
@@ -195,6 +230,12 @@ void MainWindow::setupFunctionBar(const QString& role)
 
 void MainWindow::setRole(const QString& role)
 {
+    QLayoutItem* item;
+    while ((item = mainContentLayout->takeAt(0)) != nullptr) {
+        if (QWidget* w = item->widget()) w->deleteLater();
+        delete item;
+    }
+
     currentRole = role;
     if (statusLabel) {
         if (role == "Benutzer")
@@ -204,8 +245,18 @@ void MainWindow::setRole(const QString& role)
         else
             statusLabel->setText("");
     }
+
+    if (functionBar)
+        functionBar->setVisible(false);
+
     setupFunctionBar(role);
-  
+
+    if (functionBar)
+        functionBar->setVisible(true);
+
+    QApplication::processEvents();
+    showBooksOverview();
+
 }
 
 void MainWindow::showCentralContent(QWidget* contentWidget, QSize fixedSize)
@@ -217,46 +268,145 @@ void MainWindow::showCentralContent(QWidget* contentWidget, QSize fixedSize)
         delete item;
     }
 
-    // Zentrierender Container
-    QWidget* centerContainer = new QWidget(mainContentWidget);
-    QVBoxLayout* vLayout = new QVBoxLayout(centerContainer);
-    vLayout->addStretch();
+    if (fixedSize.isValid()) {
+        // Zentrierender Container mit fester Größe
+        QWidget* centerContainer = new QWidget(mainContentWidget);
+        QVBoxLayout* vLayout = new QVBoxLayout(centerContainer);
+        vLayout->addStretch();
 
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->addStretch();
+        QHBoxLayout* hLayout = new QHBoxLayout();
+        hLayout->addStretch();
 
-    if (fixedSize.isValid())
         contentWidget->setFixedSize(fixedSize);
 
-    hLayout->addWidget(contentWidget);
-    hLayout->addStretch();
+        hLayout->addWidget(contentWidget);
+        hLayout->addStretch();
 
-    vLayout->addLayout(hLayout);
-    vLayout->addStretch();
+        vLayout->addLayout(hLayout);
+        vLayout->addStretch();
 
-    mainContentLayout->addWidget(centerContainer);
+        mainContentLayout->addWidget(centerContainer);
+
+    }
+    else {
+
+        // Content soll den gesamten Platz einnehmen
+        mainContentLayout->addWidget(contentWidget);
+
+    }
+
 }
 
 void MainWindow::addBookDialog()
+
 {
+
     AddBookDialog* addBookWidget = new AddBookDialog(mainContentWidget);
 
-    // Buttons umleiten: "Hinzufügen" und "Abbrechen"
     connect(addBookWidget->getOkButton(), &QPushButton::clicked, this, [=]() {
-        db.addBook(
+        if (!db->addBook(
             addBookWidget->getTitle(),
             addBookWidget->getAuthor(),
             addBookWidget->getYear(),
             addBookWidget->getStatus(),
             addBookWidget->getDescription(),
             addBookWidget->getImageData()
-        );
-        showCentralContent(new QLabel("Buch erfolgreich hinzugefügt!", mainContentWidget), QSize(300, 100));
+        )) {
+            QMessageBox::warning(this, "Fehler", "Buch konnte nicht hinzugefügt werden!");
+            return;
+        }
+
+        QLabel* successLabel = new QLabel("Buch wurde erfolgreich hinzugefügt.", mainContentWidget);
+        successLabel->setAlignment(Qt::AlignCenter);
+        successLabel->setObjectName("successMessage");
+        QFont font = successLabel->font();
+        font.setPointSize(14);
+        successLabel->setFont(font);
+        showCentralContent(successLabel, QSize(400, 150));
         });
 
     connect(addBookWidget->getCancelButton(), &QPushButton::clicked, this, [=]() {
         showCentralContent(new QLabel("Vorgang abgebrochen.", mainContentWidget), QSize(300, 100));
         });
 
-    showCentralContent(addBookWidget, QSize(600, 1000));
+    showCentralContent(addBookWidget, QSize(600, 1050));
+
+}
+
+void MainWindow::showBooksOverview()
+{
+    auto* booksWidget = new BooksOverviewWidget(db, currentRole, mainContentWidget);
+
+    // Signal verbinden für Edit-Funktionalität
+    connect(booksWidget, &BooksOverviewWidget::editBook, this, &MainWindow::editBookDialog);
+
+    showCentralContent(booksWidget, QSize());
+}
+
+void MainWindow::editBookDialog(int bookId)
+{
+    // Buchdetails aus Datenbank laden
+    QString title, author, status, description;
+    int year = 0;
+    QByteArray imageData;
+
+    if (!db->getBook(bookId, title, author, year, status, description, imageData)) {
+        QMessageBox::warning(this, "Fehler", "Buch konnte nicht geladen werden!");
+        return;
+    }
+
+    // AddBookDialog für die Bearbeitung vorbereiten
+    AddBookDialog* editBookWidget = new AddBookDialog(mainContentWidget);
+    editBookWidget->setBookData(bookId, title, author, year, status, description, imageData);
+
+    // OK-Button für Update-Operation verbinden
+    connect(editBookWidget->getOkButton(), &QPushButton::clicked, this, [=]() {
+        int id = editBookWidget->getBookId();
+
+        // Aktualisieren des Buches in der Datenbank
+        if (!db->updateBook(
+            id,
+            editBookWidget->getTitle(),
+            editBookWidget->getAuthor(),
+            editBookWidget->getYear(),
+            editBookWidget->getStatus(),
+            editBookWidget->getDescription(),
+            editBookWidget->getImageData()
+        )) {
+            QMessageBox::warning(this, "Fehler", "Buch konnte nicht aktualisiert werden!");
+            return;
+        }
+
+        QLabel* successLabel = new QLabel("Buch wurde erfolgreich aktualisiert.", mainContentWidget);
+        successLabel->setAlignment(Qt::AlignCenter);
+        successLabel->setObjectName("successMessage");
+        QFont font = successLabel->font();
+        font.setPointSize(14);
+        successLabel->setFont(font);
+        showCentralContent(successLabel, QSize(400, 150));
+
+        // Zurück zur Buchübersicht nach kurzer Zeit
+        QTimer::singleShot(1500, this, &MainWindow::showBooksOverview);
+        });
+
+    // Abbrechen-Button verbinden
+    connect(editBookWidget->getCancelButton(), &QPushButton::clicked, this, [=]() {
+        showBooksOverview();
+        });
+
+    showCentralContent(editBookWidget, QSize(600, 1050));
+}
+
+
+void MainWindow::showLendingRequests()
+{
+    auto* lendingRequestsWidget = new LendingRequestsWidget(db, mainContentWidget);
+    showCentralContent(lendingRequestsWidget, QSize());
+}
+
+
+void MainWindow::showUserLendings()
+{
+    auto* lendingsWidget = new UserLendingsWidget(db, mainContentWidget);
+    showCentralContent(lendingsWidget, QSize());
 }

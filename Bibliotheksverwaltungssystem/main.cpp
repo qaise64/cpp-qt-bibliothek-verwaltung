@@ -25,19 +25,21 @@ int main(int argc, char* argv[])
     db.createTables();
 
     LoginWindow loginWindow;
-    MainWindow mainWindow; 
+    MainWindow mainWindow(&db);
     g_mainWindow = &mainWindow;
 
     QObject::connect(&loginWindow, &LoginWindow::loginRequested, [&](const QString& user, const QString& pass, const QString& role) {
         mainWindow.setRole(role);
         mainWindow.showFullScreen();
-        QTimer::singleShot(1000, &loginWindow, &QWidget::hide);
-    });
+        // Verzögerung entfernen
+        loginWindow.hide();
+        });
 
     QObject::connect(&mainWindow, &MainWindow::logoutRequested, [&]() {
         loginWindow.showFullScreen();
-        QTimer::singleShot(1000, &mainWindow, &QWidget::hide);
-    });
+        // Verzögerung entfernen
+        mainWindow.hide();
+        });
 
     loginWindow.showFullScreen();
     int result = a.exec();

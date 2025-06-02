@@ -20,12 +20,18 @@ extern MainWindow* g_mainWindow;
 
 void LoginWindow::closeEvent(QCloseEvent* event)
 {
+   
     if (!g_mainWindow || !g_mainWindow->isVisible()) {
-        QApplication::quit();
+       
+        this->blockSignals(true);
+        QApplication::exit(0);
     }
     else {
         QMainWindow::closeEvent(event);
     }
+
+
+    event->accept();
 }
 
 LoginWindow::LoginWindow(QWidget* parent)
@@ -262,7 +268,9 @@ LoginWindow::LoginWindow(QWidget* parent)
 
     // Verbindungen
     connect(loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
-    connect(closeButton, &QPushButton::clicked, this, &QWidget::close);
+    connect(closeButton, &QPushButton::clicked, this, [=]() {
+        QApplication::exit(0);
+        });
     connect(minimizeButton, &QPushButton::clicked, this, &QWidget::showMinimized);
 
 

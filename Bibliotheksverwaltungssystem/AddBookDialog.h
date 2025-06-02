@@ -19,6 +19,12 @@ public:
     explicit AddBookDialog(QWidget* parent = nullptr);
     ~AddBookDialog();
 
+    void setBookData(int id, const QString& title, const QString& author, int year,
+        const QString& status, const QString& description,
+        const QByteArray& imgData);
+    int getBookId() const { return bookId; }
+    bool isEditMode() const { return editMode; }
+
     QString getTitle() const;
     QString getAuthor() const;
     int getYear() const;
@@ -36,6 +42,8 @@ signals:
     void rejected();
 
 private:
+    int bookId = -1;  // -1 bedeutet neues Buch, sonst ID des zu bearbeitenden Buchs
+    bool editMode = false;
     QLineEdit* titleEdit;
     QLineEdit* authorEdit;
     QSpinBox* yearSpinBox;

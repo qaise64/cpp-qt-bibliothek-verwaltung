@@ -393,3 +393,293 @@ QPushButton#btnMyLendings:pressed {
  AddBookDialog Style
 */
 
+
+/* --- Eingabefelder --- */
+#titleEdit, #authorEdit, #yearSpinBox, #statusComboBox {
+    border: 1px solid #CED4DA;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background-color: white;
+    min-height: 30px;
+    max-height: 60px;
+}
+#descriptionEdit {
+    border: 1px solid #CED4DA;
+    border-radius: 4px;
+    padding: 8px;
+    background-color: white;
+    min-height: 120px;
+}
+
+/* --- Bildvorschau --- */
+#imageLabel {
+    background-color: white;
+    color: #6C757D;
+    border: 1px solid #CED4DA;
+}
+
+/* --- Trennlinien --- */
+QFrame[frameShape="4"] { /* QFrame::HLine */
+    color: #E0E0E0;
+}
+
+/* --- Abschnittsüberschriften --- */
+QLabel[objectName^="sectionTitle"] {
+    color: #2C3E50;
+    font: bold 12pt "Arial";
+}
+
+/* --- Buttons --- */
+#selectImageButton {
+    background-color: #3498DB;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    height: 40px;
+    font-weight: bold;
+}
+#selectImageButton:hover {
+    background-color: #2980B9;
+}
+#okButton {
+    background-color: #2ECC71;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    height: 40px;
+    font-weight: bold;
+}
+#okButton:hover {
+    background-color: #27AE60;
+}
+#cancelButton {
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    height: 40px;
+    font-weight: bold;
+}
+#cancelButton:hover {
+    background-color: #C0392B;
+}
+
+
+
+/* Moderne Bücherkarten-Stile */
+#bookCard {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s;
+}
+
+#bookCard:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+}
+
+#bookCard[status="verfügbar"] {
+    border-left: 4px solid #4CAF50;
+}
+
+#bookCard[status="ausgeliehen"] {
+    border-left: 4px solid #FFC107;
+}
+
+#bookCover {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    margin-right:10px;
+}
+
+#bookTitle {
+    color: #333;
+    font-size: 14px;
+}
+
+#bookAuthor {
+    color: #555;
+    font-size: 13px;
+}
+
+#bookYear {
+    color: #777;
+    font-size: 12px;
+}
+
+#bookDescription {
+    color: #666;
+    font-size: 12px;
+}
+
+#statusAvailable {
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+#statusUnavailable {
+    color: #FFC107;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+#booksContainer {
+    
+    background-color: #FFFFF0;
+
+}
+
+#bookSearchBox {
+    border-radius: 18px;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+#bookSearchBox:focus {
+    border-color: #4285F4;
+    background-color: white;
+}
+
+#lendButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+#returnButton {
+    background-color: #FFC107;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+#editButton, #deleteButton {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 10px;
+    background-color: #f8f8f8;
+}
+
+#deleteButton:hover {
+    background-color: #ffebee;
+    border-color: #f44336;
+}
+
+#editButton:hover {
+    background-color: #e8f0fe;
+    border-color: #4285F4;
+}
+
+#noResultsLabel {
+    font-size: 16px;
+    color: #777;
+    padding: 40px;
+}
+
+
+/* Verbesserter Stil für das TabWidget in der Ausleihe-Verwaltung */
+QTabWidget {
+    background-color: #f5f5f5;
+    border: none;
+}
+
+QTabWidget::pane {
+    border: 1px solid #ddd;
+    border-top: none;
+    background-color: #FFFFF0; /* Ivory - konsistent mit Haupthintergrund */
+}
+
+QTabBar::tab {
+    background-color: #e0e0e0;
+    color: #457B9D; /* Deep Blue für besseren Kontrast */
+    min-width: 180px; /* Breitere Tabs */
+    padding: 10px 15px;
+    margin-right: 2px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+QTabBar::tab:selected {
+    background-color: #FFFFF0; /* Ivory */
+    color: #FF6F00; /* Orange für aktiveren Tab */
+    font-weight: bold;
+    border-bottom: none;
+}
+
+QTabBar::tab:hover:!selected {
+    background-color: #FFD166; /* Warm Yellow für Hover */
+    color: #457B9D; /* Deep Blue */
+}
+
+/* Breitere Spalten in Tabellen */
+QTableWidget {
+    background-color: #FFFFF0; /* Ivory */
+    alternate-background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    gridline-color: #eee;
+    selection-background-color: #e8f0fe;
+    selection-color: #333;
+}
+
+QTableWidget::item {
+    padding: 8px;
+    min-width: 120px; /* Mindestbreite für Tabellenzellen */
+}
+
+QTableWidget::item:selected {
+    background-color: #e8f0fe;
+    color: #333;
+}
+
+QTableWidget QHeaderView::section {
+    background-color: #457B9D; /* Deep Blue */
+    color: #FFFFF0; /* Ivory */
+    padding: 8px;
+    min-width: 120px; /* Mindestbreite für Header */
+    border: none;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}
+
+/* Verbesserte Button-Stile für bessere Sichtbarkeit */
+QPushButton[objectName="approveButton"] {
+    background-color: #4caf50; /* Grün */
+    color: white;
+    border: 2px solid #45a049; /* Rahmen für bessere Sichtbarkeit */
+    padding: 6px 12px;
+    border-radius: 4px;
+    min-width: 120px;
+    font-weight: bold;
+}
+
+QPushButton[objectName="approveButton"]:hover {
+    background-color: #45a049;
+    border-color: #2e7d32;
+}
+
+QPushButton[objectName="rejectButton"] {
+    background-color: #f44336; /* Rot */
+    color: white;
+    border: 2px solid #e53935; /* Rahmen für bessere Sichtbarkeit */
+    padding: 6px 12px;
+    border-radius: 4px;
+    min-width: 120px;
+    font-weight: bold;
+}
+
+QPushButton[objectName="rejectButton"]:hover {
+    background-color: #e53935;
+    border-color: #c62828;
+}

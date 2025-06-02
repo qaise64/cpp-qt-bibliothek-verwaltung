@@ -12,17 +12,22 @@
 
 AddBookDialog::AddBookDialog(QWidget* parent)
     : QWidget(parent)
-    , titleEdit(new QLineEdit(this))
-    , authorEdit(new QLineEdit(this))
-    , yearSpinBox(new QSpinBox(this))
-    , statusComboBox(new QComboBox(this))
-    , descriptionEdit(new QTextEdit(this))
-    , imageLabel(new QLabel(this))
-    , selectImageButton(new QPushButton("Bild auswählen", this))
-    , okButton(new QPushButton("Hinzufügen", this))
-    , cancelButton(new QPushButton("Abbrechen", this))
+
 {
+	// Objekt-Initialisierung
+
+	titleEdit = new QLineEdit(this);
+	authorEdit = new QLineEdit(this);
+	yearSpinBox = new QSpinBox(this);
+	statusComboBox = new QComboBox(this);
+	descriptionEdit = new QTextEdit(this);
+	imageLabel = new QLabel(this);
+	selectImageButton = new QPushButton("Bild auswählen", this);
+	okButton = new QPushButton("Hinzufügen", this);
+	cancelButton = new QPushButton("Abbrechen", this);
+
     // Objekt-Namen setzen
+
     this->setObjectName("addBookWidget");
     titleEdit->setObjectName("titleEdit");
     authorEdit->setObjectName("authorEdit");
@@ -35,25 +40,21 @@ AddBookDialog::AddBookDialog(QWidget* parent)
     cancelButton->setObjectName("cancelButton");
 
     // Feste Breite für das Formular
+
     this->setFixedWidth(600);
 	this->setFixedHeight(1000);
 
     // FONTS KONFIGURIEREN
+
     QFont sectionFont("Arial", 12, QFont::Bold);
     QFont labelFont("Arial", 10);
     QFont fieldFont("Arial", 10);
 
     // ALLGEMEINE STYLING-PARAMETER
-    const int fieldHeight = 40;
-    const int formSpacing = 24;  // Abstand zwischen Abschnitten
-    const int labelSpacing = 8;  // Abstand zwischen Label und Feld
 
-    // Einheitliches Styling für Input-Felder
-    QString commonStyle = "border: 1px solid #CED4DA; border-radius: 4px; padding: 4px 8px; background-color: white;";
-    titleEdit->setStyleSheet(commonStyle);
-    authorEdit->setStyleSheet(commonStyle);
-    yearSpinBox->setStyleSheet(commonStyle + "min-height: 18px;");
-    statusComboBox->setStyleSheet(commonStyle + "min-height: 18px;");
+    const int fieldHeight = 40;
+    const int formSpacing = 24;  
+    const int labelSpacing = 8;  
 
     // Placeholder-Texte
     titleEdit->setPlaceholderText("Titel eingeben...");
@@ -69,13 +70,9 @@ AddBookDialog::AddBookDialog(QWidget* parent)
     statusComboBox->addItems({ "verfügbar", "ausgeliehen" });
 
     // Einheitliche Höhe für alle Eingabefelder
-    titleEdit->setFixedHeight(fieldHeight);
-    authorEdit->setFixedHeight(fieldHeight);
-    yearSpinBox->setFixedHeight(fieldHeight);
-    statusComboBox->setFixedHeight(fieldHeight);
-    descriptionEdit->setMinimumHeight(120);
-    descriptionEdit->setStyleSheet("border: 1px solid #CED4DA; border-radius: 4px; padding: 8px; background-color: white;");
 
+    descriptionEdit->setMinimumHeight(120);
+    
     // Jahr- und Status-Feldbreiten
     yearSpinBox->setFixedWidth(250);
     statusComboBox->setFixedWidth(250);
@@ -85,14 +82,12 @@ AddBookDialog::AddBookDialog(QWidget* parent)
     imageLabel->setAlignment(Qt::AlignCenter);
     imageLabel->setText("Bildvorschau erscheint hier nach Auswahl");
     imageLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    imageLabel->setStyleSheet("background-color: white; color: #6C757D; border: 1px solid #CED4DA;");
 
     // SECTION DIVIDERS (horizontale Trennlinien)
     auto createDivider = [this]() {
         QFrame* line = new QFrame(this);
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
-        line->setStyleSheet("color: #E0E0E0;");
         return line;
         };
 
@@ -100,7 +95,6 @@ AddBookDialog::AddBookDialog(QWidget* parent)
     auto createSectionTitle = [this, sectionFont](const QString& title) {
         QLabel* label = new QLabel(title, this);
         label->setFont(sectionFont);
-        label->setStyleSheet("color: #2C3E50;");
         return label;
         };
 
@@ -174,10 +168,7 @@ AddBookDialog::AddBookDialog(QWidget* parent)
     mainLayout->addWidget(createSectionTitle("Buchcover"));
 
     // Bildauswahl-Button und Vorschau
-    selectImageButton->setStyleSheet(
-        "QPushButton { background-color: #3498DB; color: white; border: none; padding: 8px 16px; border-radius: 4px; }"
-        "QPushButton:hover { background-color: #2980B9; }"
-    );
+
     selectImageButton->setFixedHeight(fieldHeight);
     selectImageButton->setCursor(Qt::PointingHandCursor);
 
@@ -192,15 +183,6 @@ AddBookDialog::AddBookDialog(QWidget* parent)
     QHBoxLayout* buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch();
 
-    // Button-Styling
-    okButton->setStyleSheet(
-        "QPushButton { background-color: #2ECC71; color: white; border: none; padding: 8px 16px; border-radius: 4px; }"
-        "QPushButton:hover { background-color: #27AE60; }"
-    );
-    cancelButton->setStyleSheet(
-        "QPushButton { background-color: #E74C3C; color: white; border: none; padding: 8px 16px; border-radius: 4px; }"
-        "QPushButton:hover { background-color: #C0392B; }"
-    );
 
     okButton->setFixedSize(150, fieldHeight);
     cancelButton->setFixedSize(150, fieldHeight);
@@ -240,4 +222,35 @@ void AddBookDialog::on_selectImageButton_clicked()
             pixmap.save(&buffer, "JPG");
         }
     }
+}
+
+
+void AddBookDialog::setBookData(int id, const QString& title, const QString& author,
+    int year, const QString& status, const QString& description,
+    const QByteArray& imgData) {
+    bookId = id;
+    editMode = true;
+
+    titleEdit->setText(title);
+    authorEdit->setText(author);
+    yearSpinBox->setValue(year);
+    int index = statusComboBox->findText(status);
+    if (index >= 0)
+        statusComboBox->setCurrentIndex(index);
+    descriptionEdit->setText(description);
+
+    if (!imgData.isEmpty()) {
+        imageData = imgData;
+        QPixmap pixmap;
+        pixmap.loadFromData(imageData);
+        imageLabel->setPixmap(pixmap.scaled(imageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    }
+
+    // Dialog-Titel anpassen
+    QLabel* titleLabel = findChild<QLabel*>("titleLabel");
+    if (titleLabel)
+        titleLabel->setText("Buch bearbeiten");
+
+    // Button-Text anpassen
+    okButton->setText("Aktualisieren");
 }

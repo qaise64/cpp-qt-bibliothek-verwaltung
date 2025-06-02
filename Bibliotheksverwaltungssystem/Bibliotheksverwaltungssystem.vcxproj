@@ -93,7 +93,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AddBookDialog.cpp" />
+    <ClCompile Include="BooksOverviewWidget.cpp" />
+    <ClCompile Include="LendingRequestsWidget.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="UserLendingsWidget.cpp" />
     <QtRcc Include="Bibliotheksverwaltungssystem.qrc" />
     <QtUic Include="Bibliotheksverwaltungssystem.ui" />
     <QtMoc Include="Bibliotheksverwaltungssystem.h" />
@@ -103,7 +106,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="UserLendingsWidget.h" />
+    <QtMoc Include="LendingRequestsWidget.h" />
     <QtMoc Include="AddBookDialog.h" />
+    <QtMoc Include="BooksOverviewWidget.h" />
     <ClInclude Include="DatabaseManager.h" />
     <QtMoc Include="MainWindow.h" />
     <QtMoc Include="LoginWindow.h" />

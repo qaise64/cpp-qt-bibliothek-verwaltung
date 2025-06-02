@@ -10,25 +10,36 @@
 #include <QVector>
 #include "DatabaseManager.h" 
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget* parent = nullptr);
+
+    explicit MainWindow(DatabaseManager* db, QWidget* parent = nullptr);
     void setRole(const QString& role);
     void showCentralContent(QWidget* contentWidget, QSize fixedSize);
 
 signals:
+
     void logoutRequested();
 
 private slots:
+
     void addBookDialog();
+    void showBooksOverview();
+    void editBookDialog(int bookId);
+    void showLendingRequests();
+    void showUserLendings();
     
 
 private:
+
+    void closeEvent(QCloseEvent* event) override;
+
     QString currentRole;
-    DatabaseManager db;
+    DatabaseManager* db;
 
     QWidget* centralWidget;
     QVBoxLayout* mainLayout;
