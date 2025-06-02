@@ -407,6 +407,7 @@ bool DatabaseManager::approveLendingRequest(int requestId, int lendDays) {
 }
 
 bool DatabaseManager::rejectLendingRequest(int requestId) {
+
     // Überprüfen, ob die Anfrage existiert und im Status "pending" ist
     QSqlQuery checkQuery(db);
     checkQuery.prepare("SELECT book_id, status FROM lending_requests WHERE id = ?");
@@ -497,7 +498,7 @@ bool DatabaseManager::returnLendingRequest(int requestId) {
 QVector<QHash<QString, QVariant>> DatabaseManager::getUserLendings(int userId) {
     QVector<QHash<QString, QVariant>> lendings;
 
-    // Wenn kein Benutzer angegeben, aktuellen Benutzer nehmen
+    // Get user ID if not provided
     if (userId == -1) {
         QSqlQuery userQuery(db);
         userQuery.prepare("SELECT id FROM users WHERE username = 'user'");
@@ -509,7 +510,7 @@ QVector<QHash<QString, QVariant>> DatabaseManager::getUserLendings(int userId) {
         }
     }
 
-    // Ausleihen des Benutzers abrufen
+    // Get user's actual lendings
     QSqlQuery lendingsQuery(db);
     lendingsQuery.prepare(
         "SELECT l.id, l.book_id, l.lend_date, l.due_date, l.returned, "
@@ -535,22 +536,19 @@ QVector<QHash<QString, QVariant>> DatabaseManager::getUserLendings(int userId) {
             lending["extended"] = lendingsQuery.value("extended");
             lending["title"] = lendingsQuery.value("title");
             lending["author"] = lendingsQuery.value("author");
-            lending["type"] = "lending"; // Typ zur Unterscheidung
+            lending["type"] = "lending";
             lendings.append(lending);
         }
     }
 
-    // Auch Ausleihanfragen anzeigen
+    // Get pending, rejected, or canceled requests (excluding approved)
     QSqlQuery requestsQuery(db);
     requestsQuery.prepare(
         "SELECT lr.id as request_id, lr.book_id, lr.request_date, lr.status, "
         "b.title, b.author "
         "FROM lending_requests lr "
         "JOIN books b ON lr.book_id = b.id "
-        "WHERE lr.user_id = ? AND NOT EXISTS ("
-        "  SELECT 1 FROM lendings l "
-        "  WHERE l.book_id = lr.book_id AND l.user_id = lr.user_id"
-        ") "  // Hier fehlte ein Leerzeichen vor dem Anführungszeichen
+        "WHERE lr.user_id = ? AND lr.status IN ('pending', 'rejected', 'canceled') "
         "ORDER BY lr.request_date DESC"
     );
     requestsQuery.addBindValue(userId);
@@ -560,17 +558,18 @@ QVector<QHash<QString, QVariant>> DatabaseManager::getUserLendings(int userId) {
             QHash<QString, QVariant> request;
             request["request_id"] = requestsQuery.value("request_id");
             request["book_id"] = requestsQuery.value("book_id");
-            request["lend_date"] = requestsQuery.value("request_date"); // Verwende das Anfragedatum
+            request["lend_date"] = requestsQuery.value("request_date");
             request["title"] = requestsQuery.value("title");
             request["author"] = requestsQuery.value("author");
             request["status"] = requestsQuery.value("status");
-            request["type"] = "request"; // Typ zur Unterscheidung
+            request["type"] = "request";
             lendings.append(request);
         }
     }
 
     return lendings;
 }
+
 
 bool DatabaseManager::createLendingRequest(int bookId, int userId) {
     // Wenn kein Benutzer angegeben, aktuellen Benutzer nehmen

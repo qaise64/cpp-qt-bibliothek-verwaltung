@@ -8,6 +8,8 @@ LendingRequestsWidget::LendingRequestsWidget(DatabaseManager* db, QWidget* paren
 {
     setupUI();
     refreshRequests();
+
+
 }
 
 void LendingRequestsWidget::setupUI()
@@ -31,13 +33,40 @@ void LendingRequestsWidget::setupUI()
 
     // Tab 1: Ausleihanfragen
     QWidget* requestsWidget = new QWidget(tabWidget);
-    requestsLayout = new QVBoxLayout(requestsWidget);
-    requestsLayout->setSpacing(10);
+    QVBoxLayout* requestsTabLayout = new QVBoxLayout(requestsWidget);
+    requestsTabLayout->setContentsMargins(0, 0, 0, 0);
+    requestsTabLayout->setSpacing(10);
     requestsWidget->setObjectName("requestsContainer");
+
+    // Tabelle für Anfragen (nur für Kompatibilität, bleibt versteckt)
+    requestsTable = new QTableWidget(requestsWidget);
+    requestsTable->setColumnCount(6);
+    QStringList headers;
+    headers << "Anfrage-ID" << "Benutzer" << "Buch" << "Autor" << "Datum" << "Aktionen";
+    requestsTable->setHorizontalHeaderLabels(headers);
+    requestsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    requestsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+    requestsTable->setColumnWidth(0, 60);
+    requestsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    requestsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    requestsTable->verticalHeader()->setDefaultSectionSize(44);
+    requestsTable->verticalHeader()->setVisible(false);
+    requestsTable->setAlternatingRowColors(true);
+    requestsTable->hide();
+
+    // Modernes Layout für Anfragen
+    QWidget* requestsContainer = new QWidget(requestsWidget);
+    requestsLayout = new QVBoxLayout(requestsContainer);
+    requestsLayout->setContentsMargins(0, 0, 0, 0);
+    requestsLayout->setSpacing(10);
+    requestsContainer->setObjectName("requestsContainer");
+
+    requestsTabLayout->addWidget(requestsContainer);
 
     // Tab 2: Ausstehende Rückgaben
     QWidget* returnsWidget = new QWidget(tabWidget);
     QVBoxLayout* returnsLayout = new QVBoxLayout(returnsWidget);
+    returnsLayout->setContentsMargins(0, 0, 0, 0);
     returnsLayout->setSpacing(10);
     returnsWidget->setObjectName("returnsContainer");
 
@@ -48,27 +77,14 @@ void LendingRequestsWidget::setupUI()
     returnHeaders << "ID" << "Benutzer" << "Buch" << "Ausgeliehen am" << "Zurückgegeben am" << "Aktionen";
     pendingReturnsTable->setHorizontalHeaderLabels(returnHeaders);
     pendingReturnsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    pendingReturnsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+    pendingReturnsTable->setColumnWidth(0, 60);
     pendingReturnsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     pendingReturnsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    pendingReturnsTable->verticalHeader()->setDefaultSectionSize(44);
+    pendingReturnsTable->verticalHeader()->setVisible(false);
+    pendingReturnsTable->setAlternatingRowColors(true);
     returnsLayout->addWidget(pendingReturnsTable);
-
-    // Modernes Layout für Anfragen statt Tabelle
-    QWidget* requestsContainer = new QWidget(requestsWidget);
-    requestsLayout = new QVBoxLayout(requestsContainer);
-    requestsLayout->setSpacing(10);
-    requestsContainer->setObjectName("requestsContainer");
-    requestsWidget->layout()->addWidget(requestsContainer);
-
-    // Tabelle beibehalten für Kompatibilität
-    requestsTable = new QTableWidget(this);
-    requestsTable->setColumnCount(6);
-    QStringList headers;
-    headers << "Anfrage-ID" << "Benutzer" << "Buch" << "Autor" << "Datum" << "Aktionen";
-    requestsTable->setHorizontalHeaderLabels(headers);
-    requestsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    requestsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    requestsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    requestsTable->hide(); // Tabelle ausblenden, wir verwenden das neue Layout
 
     // Tabs hinzufügen
     tabWidget->addTab(requestsWidget, "Ausleihanfragen");
@@ -108,6 +124,7 @@ void LendingRequestsWidget::refreshRequests()
         requestsTable->setItem(i, 3, authorItem);
         requestsTable->setItem(i, 4, dateItem);
 
+
         // Action-Buttons
         QWidget* buttonWidget = new QWidget();
         QHBoxLayout* buttonLayout = new QHBoxLayout(buttonWidget);
@@ -117,29 +134,32 @@ void LendingRequestsWidget::refreshRequests()
         // Status aus den Anfragedaten holen
         QString status = requests[i]["status"].toString();
 
-        // Zeige unterschiedliche Buttons je nach Status
         if (status == "pending") {
             QPushButton* approveBtn = new QPushButton("Genehmigen");
-			approveBtn->setObjectName("approveButton");
+            approveBtn->setObjectName("actionButton");
             approveBtn->setProperty("requestId", requests[i]["id"].toInt());
-            approveBtn->setFixedHeight(30);
             connect(approveBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onApproveClicked);
 
             QPushButton* rejectBtn = new QPushButton("Ablehnen");
-			approveBtn->setObjectName("rejectButton");
+            rejectBtn->setObjectName("lendingcancelButton");
             rejectBtn->setProperty("requestId", requests[i]["id"].toInt());
-            rejectBtn->setFixedHeight(30);
+            rejectBtn->setFixedHeight(32);
+            rejectBtn->setMinimumWidth(90);
             connect(rejectBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onRejectClicked);
 
             buttonLayout->addWidget(approveBtn);
             buttonLayout->addWidget(rejectBtn);
         }
+
         else {
             QLabel* statusLabel = new QLabel(status == "approved" ? "Genehmigt" : "Abgelehnt");
             buttonLayout->addWidget(statusLabel);
         }
 
         requestsTable->setCellWidget(i, 5, buttonWidget);
+        requestsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+        requestsTable->setColumnWidth(0, 60);
+
     }
 
     // Auch das neue Layout aktualisieren
@@ -241,13 +261,16 @@ void LendingRequestsWidget::refreshRequestsList()
             actionsLayout->setContentsMargins(0, 0, 0, 0);
 
             QPushButton* approveBtn = new QPushButton("Genehmigen", actionsWidget);
-            QPushButton* rejectBtn = new QPushButton("Ablehnen", actionsWidget);
-
+            approveBtn->setObjectName("actionButton");
             approveBtn->setProperty("requestId", requestId);
-            rejectBtn->setProperty("requestId", requestId);
+            approveBtn->setFixedHeight(32);
+            approveBtn->setMinimumWidth(90);
 
-            approveBtn->setObjectName("approveButton");
-            rejectBtn->setObjectName("rejectButton");
+            QPushButton* rejectBtn = new QPushButton("Ablehnen", actionsWidget);
+            rejectBtn->setObjectName("cancelButton");
+            rejectBtn->setProperty("requestId", requestId);
+            rejectBtn->setFixedHeight(32);
+            rejectBtn->setMinimumWidth(90);
 
             connect(approveBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onApproveClicked);
             connect(rejectBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onRejectClicked);
@@ -258,6 +281,7 @@ void LendingRequestsWidget::refreshRequestsList()
 
             requestLayout->addWidget(actionsWidget, 1);
         }
+
         else {
             // Dummy-Widget für die korrekte Ausrichtung
             QWidget* spacerWidget = new QWidget(requestWidget);
@@ -342,6 +366,9 @@ void LendingRequestsWidget::refreshPendingReturns()
     auto pendingReturns = db->getPendingReturns();
 
     pendingReturnsTable->setRowCount(pendingReturns.size());
+    pendingReturnsTable->verticalHeader()->setDefaultSectionSize(44);
+    pendingReturnsTable->verticalHeader()->setVisible(false);
+    pendingReturnsTable->setAlternatingRowColors(true);
 
     for (int i = 0; i < pendingReturns.size(); i++) {
         QTableWidgetItem* idItem = new QTableWidgetItem(pendingReturns[i]["id"].toString());
@@ -359,6 +386,7 @@ void LendingRequestsWidget::refreshPendingReturns()
         pendingReturnsTable->setItem(i, 2, titleItem);
         pendingReturnsTable->setItem(i, 3, lendDateItem);
         pendingReturnsTable->setItem(i, 4, returnDateItem);
+        pendingReturnsTable->setRowHeight(i, 44);
 
         // Action-Button oder Status
         QWidget* buttonWidget = new QWidget();
@@ -368,20 +396,24 @@ void LendingRequestsWidget::refreshPendingReturns()
         bool isConfirmed = pendingReturns[i]["confirmed_return"].toBool();
 
         if (isConfirmed) {
-            // Bereits bestätigte Rückgabe - nur Status anzeigen
             QLabel* statusLabel = new QLabel("Bestätigt");
-            statusLabel->setStyleSheet("color: green;");
+            statusLabel->setObjectName("lendingstatusLabel");
             buttonLayout->addWidget(statusLabel);
         }
+
         else {
-            // Noch nicht bestätigte Rückgabe - Button anzeigen
             QPushButton* confirmBtn = new QPushButton("Bestätigen");
+            confirmBtn->setObjectName("actionButton");
             confirmBtn->setProperty("lendingId", pendingReturns[i]["id"].toInt());
+            confirmBtn->setFixedHeight(32);
+            confirmBtn->setMinimumWidth(90);
             connect(confirmBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onConfirmReturnClicked);
             buttonLayout->addWidget(confirmBtn);
         }
 
         buttonLayout->addStretch();
         pendingReturnsTable->setCellWidget(i, 5, buttonWidget);
+        pendingReturnsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+        pendingReturnsTable->setColumnWidth(0, 60);
     }
 }

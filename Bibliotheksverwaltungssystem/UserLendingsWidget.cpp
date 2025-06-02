@@ -8,7 +8,9 @@ UserLendingsWidget::UserLendingsWidget(DatabaseManager* db, QWidget* parent)
 {
     setupUI();
     refreshLendings();
-    lendingsTable->verticalHeader()->setDefaultSectionSize(40);
+    lendingsTable->verticalHeader()->setDefaultSectionSize(44);
+    lendingsTable->verticalHeader()->setVisible(false);
+    lendingsTable->setAlternatingRowColors(true);
 
 }
 
@@ -28,13 +30,24 @@ void UserLendingsWidget::setupUI()
     mainLayout->addWidget(title);
 
     lendingsTable = new QTableWidget(this);
+    lendingsTable->setObjectName("userLendingsTable");
     lendingsTable->setColumnCount(7);
     QStringList headers;
     headers << "ID" << "Buch" << "Autor" << "Ausleihdatum" << "Fälligkeitsdatum" << "Status" << "Aktionen";
     lendingsTable->setHorizontalHeaderLabels(headers);
+
+    // Zuerst alle Spalten auf Stretch setzen
     lendingsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    // Dann die ID-Spalte (0) auf Fixed setzen und Breite anpassen
+    lendingsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+    lendingsTable->setColumnWidth(0, 60);
+
     lendingsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     lendingsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    // Entferne diese Zeile!
+    // lendingsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     mainLayout->addWidget(lendingsTable, 1);
 }
@@ -47,6 +60,10 @@ void UserLendingsWidget::refreshLendings()
     lendingsTable->setRowCount(lendings.size());
 
     for (int i = 0; i < lendings.size(); i++) {
+        // ID
+
+        qDebug() << lendings[i]["status"].toString();
+
         QTableWidgetItem* idItem;
         if (lendings[i]["type"].toString() == "lending") {
             idItem = new QTableWidgetItem(lendings[i]["id"].toString());
@@ -55,11 +72,14 @@ void UserLendingsWidget::refreshLendings()
             idItem = new QTableWidgetItem(lendings[i]["request_id"].toString());
         }
 
+
+
+        // Titel, Autor, Datum
         QTableWidgetItem* titleItem = new QTableWidgetItem(lendings[i]["title"].toString());
         QTableWidgetItem* authorItem = new QTableWidgetItem(lendings[i]["author"].toString());
         QTableWidgetItem* lendDateItem = new QTableWidgetItem(lendings[i]["lend_date"].toString());
 
-        // Due Date nur für tatsächliche Ausleihen, nicht für Anfragen
+        // Fälligkeitsdatum
         QTableWidgetItem* dueDateItem;
         if (lendings[i]["type"].toString() == "lending") {
             dueDateItem = new QTableWidgetItem(lendings[i]["due_date"].toString());
@@ -68,7 +88,7 @@ void UserLendingsWidget::refreshLendings()
             dueDateItem = new QTableWidgetItem("-");
         }
 
-        // Status basierend auf dem Typ und dem Status
+        // Status Spalte
         QTableWidgetItem* statusItem;
         if (lendings[i]["type"].toString() == "lending") {
             bool returned = lendings[i]["returned"].toBool();
@@ -76,18 +96,11 @@ void UserLendingsWidget::refreshLendings()
         }
         else {
             QString status = lendings[i]["status"].toString();
-            // Status übersetzen
-            if (status == "pending")
-                status = "Ausstehend";
-            else if (status == "approved")
-                status = "Genehmigt";
-            else if (status == "rejected")
-                status = "Abgelehnt";
-            else if (status == "returned")
-                status = "Zurückgegeben";
-            else if (status == "canceled")
-                status = "Abgebrochen";
-
+            if (status == "pending")       status = "Ausstehend";
+            else if (status == "approved") status = "Genehmigt";
+            else if (status == "rejected") status = "Abgelehnt";
+            else if (status == "returned") status = "Zurückgegeben";
+            else if (status == "canceled") status = "Abgebrochen";
             statusItem = new QTableWidgetItem(status);
         }
 
@@ -98,62 +111,52 @@ void UserLendingsWidget::refreshLendings()
         lendingsTable->setItem(i, 4, dueDateItem);
         lendingsTable->setItem(i, 5, statusItem);
 
-        // Aktionsbuttons
+
+        // Aktionen
         QWidget* buttonWidget = new QWidget();
         QHBoxLayout* buttonLayout = new QHBoxLayout(buttonWidget);
         buttonLayout->setContentsMargins(0, 0, 0, 0);
-        buttonLayout->setSpacing(5);
+        buttonLayout->setSpacing(8);
+        buttonWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-        // Nur aktuelle Ausleihen oder genehmigte Anfragen können zurückgegeben werden
+        // 1) Zurückgeben + Verlängern
         if ((lendings[i]["type"].toString() == "lending" && !lendings[i]["returned"].toBool()) ||
-            (lendings[i]["type"].toString() == "request" && lendings[i]["status"].toString() == "approved")) {
-
-            // Button zum Zurückgeben
+            (lendings[i]["type"].toString() == "request" && lendings[i]["status"].toString() == "approved"))
+        {
             QPushButton* returnBtn = new QPushButton("Zurückgeben");
-            int lendingId;
-            if (lendings[i]["type"].toString() == "lending") {
-                lendingId = lendings[i]["id"].toInt();
-            }
-            else {
-                lendingId = lendings[i]["request_id"].toInt();
-            }
+            returnBtn->setObjectName("actionButton");
+            int lendingId = (lendings[i]["type"].toString() == "lending")
+                ? lendings[i]["id"].toInt()
+                : lendings[i]["request_id"].toInt();
             returnBtn->setProperty("lendingId", lendingId);
             returnBtn->setProperty("isRequest", lendings[i]["type"].toString() == "request");
-            returnBtn->setFixedHeight(30);
-            returnBtn->setMinimumWidth(120);
+            returnBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             connect(returnBtn, &QPushButton::clicked, this, &UserLendingsWidget::onReturnClicked);
             buttonLayout->addWidget(returnBtn);
 
-            // Neuer Button für Verlängerung (nur für tatsächliche Ausleihen, nicht für Anfragen)
             if (lendings[i]["type"].toString() == "lending" && !lendings[i]["extended"].toBool()) {
                 QPushButton* extendBtn = new QPushButton("Verlängern");
+                extendBtn->setObjectName("actionButton");
                 extendBtn->setProperty("lendingId", lendingId);
-                extendBtn->setFixedHeight(30);
-                extendBtn->setMinimumWidth(120);
-                extendBtn->setStyleSheet("background-color: #2196F3; color: white;");
+   
                 connect(extendBtn, &QPushButton::clicked, this, &UserLendingsWidget::onExtendClicked);
                 buttonLayout->addWidget(extendBtn);
             }
         }
+        // 2) Abbrechen-Button (für ausstehende Anfragen)
         else if (lendings[i]["type"].toString() == "request" && lendings[i]["status"].toString() == "pending") {
-            // Bei ausstehenden Anfragen: Abbrechen-Button anzeigen
             QPushButton* cancelBtn = new QPushButton("Abbrechen");
-			cancelBtn->setObjectName("cancelButton");
+            cancelBtn->setObjectName("lendingcancelButton");
             cancelBtn->setProperty("requestId", lendings[i]["request_id"].toInt());
-            cancelBtn->setFixedHeight(30);
-            cancelBtn->setMinimumWidth(120);
-            cancelBtn->setStyleSheet("background-color: #F44336; color: white;");
             connect(cancelBtn, &QPushButton::clicked, this, &UserLendingsWidget::onCancelRequestClicked);
             buttonLayout->addWidget(cancelBtn);
         }
+        // 3) Status-Label
         else {
-            // Status-Text anzeigen
             QString labelText;
-
             if (lendings[i]["type"].toString() == "lending") {
                 bool returned = lendings[i]["returned"].toBool();
                 bool confirmed = lendings[i]["confirmed_return"].toBool();
-
                 if (returned && !confirmed) {
                     labelText = "Zurückgegeben (warte auf Bestätigung)";
                 }
@@ -165,27 +168,23 @@ void UserLendingsWidget::refreshLendings()
                 }
             }
             else if (lendings[i]["type"].toString() == "request") {
-                QString status = lendings[i]["status"].toString();
-                if (status == "pending") {
-                    labelText = "Warte auf Genehmigung";
-                }
-                else if (status == "rejected") {
-                    labelText = "Anfrage abgelehnt";
-                }
-                else if (status == "returned") {
-                    labelText = "Zurückgegeben";
-                }
-                else if (status == "canceled") {
-                    labelText = "Anfrage abgebrochen";
-                }
+                QString st = lendings[i]["status"].toString();
+                if (st == "pending")  labelText = "Warte auf Genehmigung";
+                else if (st == "rejected") labelText = "Anfrage abgelehnt";
+                else if (st == "returned") labelText = "Zurückgegeben";
+                else if (st == "canceled") labelText = "Anfrage abgebrochen";
             }
-
             QLabel* statusLabel = new QLabel(labelText);
+            statusLabel->setObjectName("lendingstatusLabel");
+            statusLabel->setProperty("class", "lendingstatusLabel"); // Für QSS
             buttonLayout->addWidget(statusLabel);
         }
 
         lendingsTable->setCellWidget(i, 6, buttonWidget);
+        lendingsTable->setRowHeight(i, 44);
 
+        qDebug() << "Request-Status:" << lendings[i]["status"].toString();
+        
     }
 }
 
@@ -204,13 +203,10 @@ void UserLendingsWidget::onReturnClicked()
 
     if (reply == QMessageBox::Yes) {
         bool success = false;
-
         if (isRequest) {
-            // Behandle Ausleihanfragen
             success = db->returnLendingRequest(lendingId);
         }
         else {
-            // Behandle tatsächliche Ausleihen
             success = db->returnBook(lendingId);
         }
 
@@ -242,7 +238,9 @@ void UserLendingsWidget::onExtendClicked()
             refreshLendings();
         }
         else {
-            QMessageBox::warning(this, "Fehler", "Ausleihe konnte nicht verlängert werden. Möglicherweise wurde sie bereits verlängert.");
+            QMessageBox::warning(this, "Fehler",
+                "Ausleihe konnte nicht verlängert werden. "
+                "Möglicherweise wurde sie bereits verlängert.");
         }
     }
 }
