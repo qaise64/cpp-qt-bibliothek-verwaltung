@@ -741,7 +741,7 @@ QPushButton#actionButton:hover {
     background-color: #1976D2;
 }
 
-QPushButton#lendingcancelButton, QPushButton#cancelButton {
+QPushButton#lendingcancelButton {
     min-width: 80px;
     max-width: 120px;
     min-height: 15px;
@@ -754,7 +754,7 @@ QPushButton#lendingcancelButton, QPushButton#cancelButton {
     background-color: #F44336;
     color: #FFFFF0;
 }
-QPushButton#lendingcancelButton:hover, QPushButton#cancelButton:hover {
+QPushButton#lendingcancelButton:hover {
     background-color: #B71C1C;
 }
 
