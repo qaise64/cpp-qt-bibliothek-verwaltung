@@ -12,7 +12,7 @@
 BooksOverviewWidget::BooksOverviewWidget(DatabaseManager* db, const QString& role, QWidget* parent)
     : QWidget(parent), db(db), role(role)
 {
-    // Hauptlayout mit voller Größe und modernem Aussehen
+    
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(20, 20, 20, 20);
     mainLayout->setSpacing(15);
@@ -30,7 +30,6 @@ BooksOverviewWidget::BooksOverviewWidget(DatabaseManager* db, const QString& rol
     // Modernes Suchfeld
     searchEdit = new QLineEdit(this);
     searchEdit->setPlaceholderText("🔍 Nach Titel oder Autor suchen...");
-    searchEdit->setClearButtonEnabled(true);
     searchEdit->setMinimumWidth(300);
     searchEdit->setObjectName("bookSearchBox");
 
@@ -264,7 +263,7 @@ QWidget* BooksOverviewWidget::createBookCard(int bookId, const QString& title, c
             requestBtn->setProperty("action", "request");
             requestBtn->setObjectName("requestButton");
             requestBtn->setFixedHeight(32);
-            requestBtn->setMinimumWidth(150); // Breiter Button
+            requestBtn->setMinimumWidth(150); 
             connect(requestBtn, &QPushButton::clicked, this, &BooksOverviewWidget::onActionClicked);
             actionLayout->addWidget(requestBtn);
         }

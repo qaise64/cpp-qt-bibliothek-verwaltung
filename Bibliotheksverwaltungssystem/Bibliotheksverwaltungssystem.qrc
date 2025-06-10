@@ -12,5 +12,6 @@
         <file>resources/icons/funcbar/clipboard-solid.svg</file>
         <file>resources/icons/funcbar/chart-line-solid.svg</file>
         <file>resources/icons/funcbar/chart-simple-solid.svg</file>
+        <file>resources/icons/windowicon.svg</file>
     </qresource>
 </RCC>

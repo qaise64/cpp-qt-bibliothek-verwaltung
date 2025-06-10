@@ -17,6 +17,8 @@ int main(int argc, char* argv[]) {
         a.setStyleSheet(ts.readAll());
     }
 
+    a.setWindowIcon(QIcon(":/resources/icons/windowicon.svg"));
+
     DatabaseManager db;
     db.openDatabase("library.db");
     db.createTables();

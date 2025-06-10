@@ -542,9 +542,11 @@ QLabel[objectName^="sectionTitle"] {
 #bookSearchBox {
     border-radius: 18px;
     padding: 8px 15px;
+    padding-right: 28px;
     border: 1px solid #ddd;
     background-color: #f9f9f9;
 }
+
 
 #bookSearchBox:focus {
     border-color: #4285F4;
@@ -853,3 +855,7 @@ QWidget#LendingRequestsWidget QTabBar::tab:hover {
     color: #2C3E50;
     border-bottom: 2px solid #FFD166;
 }
+
+
+QLabel#statValueLabel { color: #457B9D; font-size: 28px; font-weight: bold; }
+QLabel#statLabel { color: #22334a; font-size: 13px; }

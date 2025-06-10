@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-#include "ui_Bibliotheksverwaltungssystem.h"
 
 class Bibliotheksverwaltungssystem : public QMainWindow
 {
@@ -12,5 +11,5 @@ public:
     ~Bibliotheksverwaltungssystem();
 
 private:
-    Ui::BibliotheksverwaltungssystemClass ui;
+    
 };

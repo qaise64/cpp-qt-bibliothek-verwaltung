@@ -32,9 +32,6 @@
     <QtRcc Include="Bibliotheksverwaltungssystem.qrc">
       <Filter>resources</Filter>
     </QtRcc>
-    <QtUic Include="Bibliotheksverwaltungssystem.ui">
-      <Filter>ui</Filter>
-    </QtUic>
     <QtMoc Include="Bibliotheksverwaltungssystem.h">
       <Filter>include</Filter>
     </QtMoc>

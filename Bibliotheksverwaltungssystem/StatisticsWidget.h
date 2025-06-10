@@ -1,6 +1,10 @@
 #pragma once
 #include <QWidget>
 #include "DatabaseManager.h"
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
+#include <QtCharts/QChart>
 
 QT_BEGIN_NAMESPACE
 namespace QtCharts {

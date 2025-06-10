@@ -1,9 +1,7 @@
 #include "Bibliotheksverwaltungssystem.h"
 
 Bibliotheksverwaltungssystem::Bibliotheksverwaltungssystem(QWidget *parent)
-    : QMainWindow(parent)
-{
-    ui.setupUi(this);
+    : QMainWindow(parent){
 }
 
 Bibliotheksverwaltungssystem::~Bibliotheksverwaltungssystem()
