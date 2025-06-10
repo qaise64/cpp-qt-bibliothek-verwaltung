@@ -20,18 +20,16 @@ extern MainWindow* g_mainWindow;
 
 void LoginWindow::closeEvent(QCloseEvent* event)
 {
-   
-    if (!g_mainWindow || !g_mainWindow->isVisible()) {
-       
+
+    if (!m_isBeingDeleted && (!g_mainWindow || !g_mainWindow->isVisible())) {
         this->blockSignals(true);
         QApplication::exit(0);
     }
     else {
         QMainWindow::closeEvent(event);
     }
-
-
     event->accept();
+
 }
 
 LoginWindow::LoginWindow(QWidget* parent)
@@ -271,7 +269,7 @@ LoginWindow::LoginWindow(QWidget* parent)
     connect(closeButton, &QPushButton::clicked, this, [=]() {
         QApplication::exit(0);
         });
-    connect(minimizeButton, &QPushButton::clicked, this, &QWidget::showMinimized);
+    connect(minimizeButton, & QPushButton::clicked, this, & QWidget::showMinimized);
 
 
 

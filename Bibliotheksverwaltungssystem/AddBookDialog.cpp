@@ -37,7 +37,7 @@ AddBookDialog::AddBookDialog(QWidget* parent)
     imageLabel->setObjectName("imageLabel");
     selectImageButton->setObjectName("selectImageButton");
     okButton->setObjectName("okButton");
-    cancelButton->setObjectName("cancelButton");
+    cancelButton->setObjectName("dialogCancelButton");
 
     // Feste Breite für das Formular
 

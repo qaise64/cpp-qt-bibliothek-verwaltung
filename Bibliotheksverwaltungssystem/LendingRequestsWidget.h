@@ -7,8 +7,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTabWidget>
-#include <QHeaderView> 
-#include <QMessageBox> 
+#include <QHeaderView>
+#include <QMessageBox>
 #include "DatabaseManager.h"
 #include <QTime>
 #include <QDateTime>
@@ -19,20 +19,21 @@ class LendingRequestsWidget : public QWidget {
 public:
     explicit LendingRequestsWidget(DatabaseManager* db, QWidget* parent = nullptr);
     void refreshRequests();
-    void refreshPendingReturns(); // Neue Methode für ausstehende Rückgaben
+    void refreshPendingReturns();
 
 private slots:
     void onApproveClicked();
     void onRejectClicked();
-    void onConfirmReturnClicked(); // Neuer Slot für Rückgabebestätigung
+    void onConfirmReturnClicked();
 
 private:
     DatabaseManager* db;
     QTableWidget* requestsTable;
-    QTableWidget* pendingReturnsTable; // Neue Tabelle für ausstehende Rückgaben
-    QVBoxLayout* requestsLayout;
-    QTabWidget* tabWidget; // Tabs für Anfragen und Rückgaben
+    QTableWidget* pendingReturnsTable;
+    QTabWidget* tabWidget;
+    QVBoxLayout* requestsLayout = nullptr;
+    QVBoxLayout* returnsLayout = nullptr;
     void setupUI();
     void refreshRequestsList();
+    void refreshReturnsList(); 
 };
-

@@ -3,17 +3,14 @@
 #include "DatabaseManager.h"
 #include "LoginWindow.h"
 #include "MainWindow.h"
-#include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
-#include <QTimer>
+#include <functional>
 
 MainWindow* g_mainWindow = nullptr;
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
-
     QFile styleFile("style.qss");
     if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream ts(&styleFile);
@@ -24,24 +21,42 @@ int main(int argc, char* argv[])
     db.openDatabase("library.db");
     db.createTables();
 
-    LoginWindow loginWindow;
-    MainWindow mainWindow(&db);
-    g_mainWindow = &mainWindow;
+    LoginWindow* loginWindow = nullptr;
+    std::function<void(const QString&, const QString&, const QString&)> handleLogin;
 
-    QObject::connect(&loginWindow, &LoginWindow::loginRequested, [&](const QString& user, const QString& pass, const QString& role) {
-        mainWindow.setRole(role);
-        mainWindow.showFullScreen();
-        // Verzögerung entfernen
-        loginWindow.hide();
-        });
+    // Neue Funktion zum Auftauchen des Login-Fensters
+    auto showLogin = [&]() {
+        if (!loginWindow) {
+            loginWindow = new LoginWindow();
+            QObject::connect(loginWindow, &LoginWindow::loginRequested, handleLogin);
+        }
+        loginWindow->showFullScreen();
+        };
 
-    QObject::connect(&mainWindow, &MainWindow::logoutRequested, [&]() {
-        loginWindow.showFullScreen();
-        // Verzögerung entfernen
-        mainWindow.hide();
-        });
+    handleLogin = [&](const QString& user, const QString& pass, const QString& role) {
+        MainWindow* mainWindow = new MainWindow(&db);
+        g_mainWindow = mainWindow;
+        mainWindow->setRole(role);
+        mainWindow->showFullScreen();
+        loginWindow->hide();
 
-    loginWindow.showFullScreen();
-    int result = a.exec();
-    return result;
+        QObject::connect(mainWindow, &MainWindow::logoutRequested, [&, mainWindow]() {
+            mainWindow->close();
+            g_mainWindow = nullptr;
+
+        
+            loginWindow->markForDeletion(false);
+
+            // Direkt anzeigen, ohne Zerstörung und Neuerstellung
+            loginWindow->showFullScreen();
+            });
+
+        QObject::connect(mainWindow, &MainWindow::destroyed, [&]() {
+            g_mainWindow = nullptr;
+            });
+        };
+
+    showLogin();
+    return a.exec();
+
 }

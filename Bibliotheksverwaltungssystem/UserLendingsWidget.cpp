@@ -8,6 +8,7 @@ UserLendingsWidget::UserLendingsWidget(DatabaseManager* db, QWidget* parent)
 {
     setupUI();
     refreshLendings();
+    this->setObjectName("UserLendingsWidget");
     lendingsTable->verticalHeader()->setDefaultSectionSize(44);
     lendingsTable->verticalHeader()->setVisible(false);
     lendingsTable->setAlternatingRowColors(true);
@@ -124,19 +125,20 @@ void UserLendingsWidget::refreshLendings()
             (lendings[i]["type"].toString() == "request" && lendings[i]["status"].toString() == "approved"))
         {
             QPushButton* returnBtn = new QPushButton("Zurückgeben");
-            returnBtn->setObjectName("actionButton");
+            returnBtn->setObjectName("userActionButton");
             int lendingId = (lendings[i]["type"].toString() == "lending")
                 ? lendings[i]["id"].toInt()
                 : lendings[i]["request_id"].toInt();
             returnBtn->setProperty("lendingId", lendingId);
             returnBtn->setProperty("isRequest", lendings[i]["type"].toString() == "request");
-            returnBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            returnBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             connect(returnBtn, &QPushButton::clicked, this, &UserLendingsWidget::onReturnClicked);
             buttonLayout->addWidget(returnBtn);
 
             if (lendings[i]["type"].toString() == "lending" && !lendings[i]["extended"].toBool()) {
                 QPushButton* extendBtn = new QPushButton("Verlängern");
-                extendBtn->setObjectName("actionButton");
+                extendBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                extendBtn->setObjectName("userActionButton");
                 extendBtn->setProperty("lendingId", lendingId);
    
                 connect(extendBtn, &QPushButton::clicked, this, &UserLendingsWidget::onExtendClicked);
@@ -146,7 +148,7 @@ void UserLendingsWidget::refreshLendings()
         // 2) Abbrechen-Button (für ausstehende Anfragen)
         else if (lendings[i]["type"].toString() == "request" && lendings[i]["status"].toString() == "pending") {
             QPushButton* cancelBtn = new QPushButton("Abbrechen");
-            cancelBtn->setObjectName("lendingcancelButton");
+            cancelBtn->setObjectName("userLendingCancelButton");
             cancelBtn->setProperty("requestId", lendings[i]["request_id"].toInt());
             connect(cancelBtn, &QPushButton::clicked, this, &UserLendingsWidget::onCancelRequestClicked);
             buttonLayout->addWidget(cancelBtn);
@@ -176,7 +178,6 @@ void UserLendingsWidget::refreshLendings()
             }
             QLabel* statusLabel = new QLabel(labelText);
             statusLabel->setObjectName("lendingstatusLabel");
-            statusLabel->setProperty("class", "lendingstatusLabel"); // Für QSS
             buttonLayout->addWidget(statusLabel);
         }
 

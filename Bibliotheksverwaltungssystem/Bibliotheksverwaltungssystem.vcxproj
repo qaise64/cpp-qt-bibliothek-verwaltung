@@ -37,7 +37,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.9.0_msvc2022_64</QtInstall>
-    <QtModules>core;gui;widgets;sql;svg;svgwidgets;xml</QtModules>
+    <QtModules>core;gui;widgets;sql;svg;svgwidgets;xml;charts</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
@@ -96,6 +96,7 @@
     <ClCompile Include="BooksOverviewWidget.cpp" />
     <ClCompile Include="LendingRequestsWidget.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="StatisticsWidget.cpp" />
     <ClCompile Include="UserLendingsWidget.cpp" />
     <QtRcc Include="Bibliotheksverwaltungssystem.qrc" />
     <QtUic Include="Bibliotheksverwaltungssystem.ui" />
@@ -106,6 +107,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="StatisticsWidget.h" />
     <QtMoc Include="UserLendingsWidget.h" />
     <QtMoc Include="LendingRequestsWidget.h" />
     <QtMoc Include="AddBookDialog.h" />

@@ -9,7 +9,7 @@
 #include <QDateTime>
 
 DatabaseManager::DatabaseManager() {
-    // Konstruktor-Implementierung (ggf. Initialisierung)
+   
 }
 
 bool DatabaseManager::openDatabase(const QString& dbName) {
@@ -530,6 +530,7 @@ QVector<QHash<QString, QVariant>> DatabaseManager::getUserLendings(int userId) {
             lending["id"] = lendingsQuery.value("id");
             lending["book_id"] = lendingsQuery.value("book_id");
             lending["lend_date"] = lendingsQuery.value("lend_date");
+            lending["request_date"] = lendingsQuery.value("lend_date"); // Für konsistente Sortierung
             lending["due_date"] = lendingsQuery.value("due_date");
             lending["returned"] = lendingsQuery.value("returned");
             lending["confirmed_return"] = lendingsQuery.value("confirmed_return");
@@ -559,6 +560,7 @@ QVector<QHash<QString, QVariant>> DatabaseManager::getUserLendings(int userId) {
             request["request_id"] = requestsQuery.value("request_id");
             request["book_id"] = requestsQuery.value("book_id");
             request["lend_date"] = requestsQuery.value("request_date");
+            request["request_date"] = requestsQuery.value("request_date"); // Für konsistente Sortierung
             request["title"] = requestsQuery.value("title");
             request["author"] = requestsQuery.value("author");
             request["status"] = requestsQuery.value("status");
@@ -566,6 +568,11 @@ QVector<QHash<QString, QVariant>> DatabaseManager::getUserLendings(int userId) {
             lendings.append(request);
         }
     }
+
+    // Sortieren nach Antragszeit absteigend (neueste zuerst)
+    std::sort(lendings.begin(), lendings.end(), [](const QHash<QString, QVariant>& a, const QHash<QString, QVariant>& b) {
+        return a["request_date"].toDateTime() > b["request_date"].toDateTime();
+        });
 
     return lendings;
 }
@@ -856,4 +863,41 @@ bool DatabaseManager::cancelLendingRequest(int requestId) {
 
     qDebug() << "Ausleihanfrage erfolgreich abgebrochen, Buch ID:" << bookId;
     return true;
+}
+
+// Statistikmethoden
+
+int DatabaseManager::getTotalBooks() {
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) FROM books");
+    query.exec();
+    return query.next() ? query.value(0).toInt() : 0;
+}
+
+int DatabaseManager::getAvailableBooks() {
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) FROM books WHERE status = 'verfügbar'");
+    query.exec();
+    return query.next() ? query.value(0).toInt() : 0;
+}
+
+int DatabaseManager::getLentBooks() {
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) FROM books WHERE status = 'ausgeliehen'");
+    query.exec();
+    return query.next() ? query.value(0).toInt() : 0;
+}
+
+int DatabaseManager::getTotalLendings() {
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) FROM lendings");
+    query.exec();
+    return query.next() ? query.value(0).toInt() : 0;
+}
+
+double DatabaseManager::getAverageLendingDuration() {
+    QSqlQuery query(db);
+    query.prepare("SELECT AVG(julianday(return_date) - julianday(lend_date)) FROM lendings WHERE returned = 1 AND return_date IS NOT NULL");
+    query.exec();
+    return query.next() ? query.value(0).toDouble() : 0.0;
 }

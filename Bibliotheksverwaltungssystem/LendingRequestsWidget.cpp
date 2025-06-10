@@ -2,12 +2,14 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QDateTime>
+#include <QScrollArea>
 
 LendingRequestsWidget::LendingRequestsWidget(DatabaseManager* db, QWidget* parent)
     : QWidget(parent), db(db)
 {
     setupUI();
     refreshRequests();
+    this->setObjectName("LendingRequestsWidget");
 
 
 }
@@ -35,8 +37,8 @@ void LendingRequestsWidget::setupUI()
     QWidget* requestsWidget = new QWidget(tabWidget);
     QVBoxLayout* requestsTabLayout = new QVBoxLayout(requestsWidget);
     requestsTabLayout->setContentsMargins(0, 0, 0, 0);
-    requestsTabLayout->setSpacing(10);
-    requestsWidget->setObjectName("requestsContainer");
+    requestsWidget->setObjectName("requestsTabWidget");
+	requestsWidget->setStyleSheet("background-color: #ffffff;");
 
     // Tabelle für Anfragen (nur für Kompatibilität, bleibt versteckt)
     requestsTable = new QTableWidget(requestsWidget);
@@ -61,30 +63,32 @@ void LendingRequestsWidget::setupUI()
     requestsLayout->setSpacing(10);
     requestsContainer->setObjectName("requestsContainer");
 
-    requestsTabLayout->addWidget(requestsContainer);
+    QScrollArea* requestsScrollArea = new QScrollArea(this);
+    requestsScrollArea->setWidgetResizable(true);
+    requestsScrollArea->setFrameShape(QFrame::NoFrame);
+    requestsScrollArea->setWidget(requestsContainer);
+    requestsTabLayout->addWidget(requestsScrollArea);
 
     // Tab 2: Ausstehende Rückgaben
     QWidget* returnsWidget = new QWidget(tabWidget);
-    QVBoxLayout* returnsLayout = new QVBoxLayout(returnsWidget);
+    QVBoxLayout* returnsTabLayout = new QVBoxLayout(returnsWidget);
+    returnsTabLayout->setContentsMargins(0, 0, 0, 0);
+    returnsTabLayout->setSpacing(10);
+    returnsWidget->setObjectName("returnsTabWidget");
+	returnsWidget->setStyleSheet("background-color: #ffffff;");
+
+    QWidget* returnsContainer = new QWidget(returnsWidget);
+    returnsLayout = new QVBoxLayout(returnsContainer);
     returnsLayout->setContentsMargins(0, 0, 0, 0);
     returnsLayout->setSpacing(10);
-    returnsWidget->setObjectName("returnsContainer");
+    returnsContainer->setObjectName("returnsContainer");
 
-    // Tabelle für ausstehende Rückgaben
-    pendingReturnsTable = new QTableWidget(returnsWidget);
-    pendingReturnsTable->setColumnCount(6);
-    QStringList returnHeaders;
-    returnHeaders << "ID" << "Benutzer" << "Buch" << "Ausgeliehen am" << "Zurückgegeben am" << "Aktionen";
-    pendingReturnsTable->setHorizontalHeaderLabels(returnHeaders);
-    pendingReturnsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    pendingReturnsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-    pendingReturnsTable->setColumnWidth(0, 60);
-    pendingReturnsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    pendingReturnsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    pendingReturnsTable->verticalHeader()->setDefaultSectionSize(44);
-    pendingReturnsTable->verticalHeader()->setVisible(false);
-    pendingReturnsTable->setAlternatingRowColors(true);
-    returnsLayout->addWidget(pendingReturnsTable);
+    QScrollArea* returnsScrollArea = new QScrollArea(this);
+    returnsScrollArea->setWidgetResizable(true);
+    returnsScrollArea->setFrameShape(QFrame::NoFrame);
+    returnsScrollArea->setWidget(returnsContainer);
+
+    returnsTabLayout->addWidget(returnsScrollArea);
 
     // Tabs hinzufügen
     tabWidget->addTab(requestsWidget, "Ausleihanfragen");
@@ -98,71 +102,117 @@ void LendingRequestsWidget::setupUI()
             refreshRequests();
         }
         else if (index == 1) {
-            refreshPendingReturns();
+            refreshReturnsList();
         }
         });
 }
 
-void LendingRequestsWidget::refreshRequests()
+void LendingRequestsWidget::refreshReturnsList()
 {
-    // Aktuelle Implementierung beibehalten
-    requestsTable->setRowCount(0);
-
-    auto requests = db->getLendingRequests();
-    requestsTable->setRowCount(requests.size());
-
-    for (int i = 0; i < requests.size(); i++) {
-        QTableWidgetItem* idItem = new QTableWidgetItem(requests[i]["id"].toString());
-        QTableWidgetItem* userItem = new QTableWidgetItem(requests[i]["username"].toString());
-        QTableWidgetItem* titleItem = new QTableWidgetItem(requests[i]["title"].toString());
-        QTableWidgetItem* authorItem = new QTableWidgetItem(requests[i]["author"].toString());
-        QTableWidgetItem* dateItem = new QTableWidgetItem(requests[i]["request_date"].toString());
-
-        requestsTable->setItem(i, 0, idItem);
-        requestsTable->setItem(i, 1, userItem);
-        requestsTable->setItem(i, 2, titleItem);
-        requestsTable->setItem(i, 3, authorItem);
-        requestsTable->setItem(i, 4, dateItem);
-
-
-        // Action-Buttons
-        QWidget* buttonWidget = new QWidget();
-        QHBoxLayout* buttonLayout = new QHBoxLayout(buttonWidget);
-        buttonLayout->setContentsMargins(0, 0, 0, 0);
-        buttonLayout->setSpacing(5);
-
-        // Status aus den Anfragedaten holen
-        QString status = requests[i]["status"].toString();
-
-        if (status == "pending") {
-            QPushButton* approveBtn = new QPushButton("Genehmigen");
-            approveBtn->setObjectName("actionButton");
-            approveBtn->setProperty("requestId", requests[i]["id"].toInt());
-            connect(approveBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onApproveClicked);
-
-            QPushButton* rejectBtn = new QPushButton("Ablehnen");
-            rejectBtn->setObjectName("lendingcancelButton");
-            rejectBtn->setProperty("requestId", requests[i]["id"].toInt());
-            rejectBtn->setFixedHeight(32);
-            rejectBtn->setMinimumWidth(90);
-            connect(rejectBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onRejectClicked);
-
-            buttonLayout->addWidget(approveBtn);
-            buttonLayout->addWidget(rejectBtn);
+    // UI-Elemente löschen
+    QLayoutItem* item;
+    while ((item = returnsLayout->takeAt(0)) != nullptr) {
+        if (QWidget* widget = item->widget()) {
+            widget->deleteLater();
         }
-
-        else {
-            QLabel* statusLabel = new QLabel(status == "approved" ? "Genehmigt" : "Abgelehnt");
-            buttonLayout->addWidget(statusLabel);
-        }
-
-        requestsTable->setCellWidget(i, 5, buttonWidget);
-        requestsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-        requestsTable->setColumnWidth(0, 60);
-
+        delete item;
     }
 
-    // Auch das neue Layout aktualisieren
+    auto returns = db->getPendingReturns();
+
+    if (returns.isEmpty()) {
+        QLabel* noReturnsLabel = new QLabel("Keine ausstehenden Rückgaben.", this);
+        noReturnsLabel->setAlignment(Qt::AlignCenter);
+        returnsLayout->addWidget(noReturnsLabel);
+        return;
+    }
+
+    // Kopfzeile
+    QWidget* headerWidget = new QWidget(this);
+    QHBoxLayout* headerLayout = new QHBoxLayout(headerWidget);
+    headerLayout->setContentsMargins(10, 5, 10, 5);
+
+    QLabel* idHeader = new QLabel("ID", headerWidget);
+    QLabel* userHeader = new QLabel("Benutzer", headerWidget);
+    QLabel* titleHeader = new QLabel("Buchtitel", headerWidget);
+    QLabel* lendDateHeader = new QLabel("Ausgeliehen am", headerWidget);
+    QLabel* returnDateHeader = new QLabel("Zurückgegeben am", headerWidget);
+    QLabel* actionsHeader = new QLabel("Aktionen", headerWidget);
+
+    idHeader->setFixedWidth(60);
+    userHeader->setFixedWidth(150);
+    titleHeader->setFixedWidth(350);
+    lendDateHeader->setFixedWidth(200);
+    returnDateHeader->setFixedWidth(200);
+
+    headerLayout->addWidget(idHeader);
+    headerLayout->addWidget(userHeader);
+    headerLayout->addWidget(titleHeader);
+    headerLayout->addWidget(lendDateHeader);
+    headerLayout->addWidget(returnDateHeader);
+    headerLayout->addWidget(actionsHeader, 1);
+
+    headerWidget->setObjectName("requestsHeader");
+    returnsLayout->addWidget(headerWidget);
+
+    // Rückgaben durchlaufen
+    for (const auto& ret : returns) {
+        QWidget* returnWidget = new QWidget(this);
+        QHBoxLayout* returnLayout = new QHBoxLayout(returnWidget);
+        returnLayout->setContentsMargins(10, 5, 10, 5);
+
+        QLabel* idLabel = new QLabel(ret["id"].toString(), returnWidget);
+        QLabel* userLabel = new QLabel(ret["username"].toString(), returnWidget);
+        QLabel* titleLabel = new QLabel(ret["title"].toString(), returnWidget);
+        QLabel* lendDateLabel = new QLabel(ret["lend_date"].toDateTime().toString("dd.MM.yyyy hh:mm"), returnWidget);
+        QLabel* returnDateLabel = new QLabel(ret["return_date"].toDateTime().toString("dd.MM.yyyy hh:mm"), returnWidget);
+
+        idLabel->setFixedWidth(60);
+        userLabel->setFixedWidth(150);
+        titleLabel->setFixedWidth(350);
+        lendDateLabel->setFixedWidth(200);
+        returnDateLabel->setFixedWidth(200);
+
+        returnLayout->addWidget(idLabel);
+        returnLayout->addWidget(userLabel);
+        returnLayout->addWidget(titleLabel);
+        returnLayout->addWidget(lendDateLabel);
+        returnLayout->addWidget(returnDateLabel);
+
+        // Aktionen/Status
+        bool isConfirmed = ret["confirmed_return"].toBool();
+        if (isConfirmed) {
+            QLabel* statusLabel = new QLabel("Bestätigt", returnWidget);
+            statusLabel->setObjectName("lendingstatusLabel");
+            returnLayout->addWidget(statusLabel, 1);
+        }
+        else {
+            QPushButton* confirmBtn = new QPushButton("Bestätigen", returnWidget);
+            confirmBtn->setObjectName("actionButton");
+            confirmBtn->setProperty("lendingId", ret["id"].toInt());
+            confirmBtn->setFixedHeight(35);
+            connect(confirmBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onConfirmReturnClicked);
+            returnLayout->addWidget(confirmBtn, 1);
+			returnLayout->addStretch();
+        }
+
+        returnWidget->setObjectName("requestItem");
+        if (isConfirmed) {
+            returnWidget->setStyleSheet("background-color: #E8F5E9;");
+        }
+        else {
+            returnWidget->setStyleSheet("background-color: #FFFDE7;");
+        }
+
+        returnsLayout->addWidget(returnWidget);
+    }
+
+    returnsLayout->addStretch();
+    
+}
+
+void LendingRequestsWidget::refreshRequests()
+{
     refreshRequestsList();
 }
 
@@ -191,18 +241,23 @@ void LendingRequestsWidget::refreshRequestsList()
     QHBoxLayout* headerLayout = new QHBoxLayout(headerWidget);
     headerLayout->setContentsMargins(10, 5, 10, 5);
 
+    QLabel* bookIdHeader = new QLabel("ID", headerWidget);
+    bookIdHeader->setFixedWidth(60);
     QLabel* titleHeader = new QLabel("Buchtitel", headerWidget);
+    titleHeader->setFixedWidth(350);
+    QLabel* authorHeader = new QLabel("Autor", headerWidget);
+    authorHeader->setFixedWidth(200);
     QLabel* userHeader = new QLabel("Benutzer", headerWidget);
+    userHeader->setFixedWidth(150);
     QLabel* dateHeader = new QLabel("Anfragedatum", headerWidget);
+    dateHeader->setFixedWidth(200);
     QLabel* statusHeader = new QLabel("Status", headerWidget);
+    statusHeader->setFixedWidth(200);
     QLabel* actionsHeader = new QLabel("Aktionen", headerWidget);
 
-    titleHeader->setFixedWidth(200);
-    userHeader->setFixedWidth(150);
-    dateHeader->setFixedWidth(150);
-    statusHeader->setFixedWidth(100);
-
+    headerLayout->addWidget(bookIdHeader);
     headerLayout->addWidget(titleHeader);
+    headerLayout->addWidget(authorHeader);
     headerLayout->addWidget(userHeader);
     headerLayout->addWidget(dateHeader);
     headerLayout->addWidget(statusHeader);
@@ -217,6 +272,7 @@ void LendingRequestsWidget::refreshRequestsList()
         QHBoxLayout* requestLayout = new QHBoxLayout(requestWidget);
         requestLayout->setContentsMargins(10, 5, 10, 5);
 
+        QString bookId = request["book_id"].toString();
         QString title = request["title"].toString();
         QString author = request["author"].toString();
         QString username = request["username"].toString();
@@ -225,10 +281,18 @@ void LendingRequestsWidget::refreshRequestsList()
         QString status = request["status"].toString();
         int requestId = request["id"].toInt();
 
-        QLabel* titleLabel = new QLabel(title + " (" + author + ")", requestWidget);
+        QLabel* bookIdLabel = new QLabel(bookId, requestWidget);
+        bookIdLabel->setFixedWidth(60);
+        QLabel* titleLabel = new QLabel(title, requestWidget);
+        titleLabel->setFixedWidth(350);
+        QLabel* authorLabel = new QLabel(author, requestWidget);
+        authorLabel->setFixedWidth(200);
         QLabel* userLabel = new QLabel(username, requestWidget);
+        userLabel->setFixedWidth(150);
         QLabel* dateLabel = new QLabel(dateStr, requestWidget);
+        dateLabel->setFixedWidth(200);
         QLabel* statusLabel = new QLabel(status, requestWidget);
+        statusLabel->setFixedWidth(200);
 
         // Farbliche Kennzeichnung je nach Status
         if (status == "pending") {
@@ -244,12 +308,9 @@ void LendingRequestsWidget::refreshRequestsList()
             statusLabel->setText("Abgelehnt");
         }
 
-        titleLabel->setFixedWidth(200);
-        userLabel->setFixedWidth(150);
-        dateLabel->setFixedWidth(150);
-        statusLabel->setFixedWidth(100);
-
+        requestLayout->addWidget(bookIdLabel);
         requestLayout->addWidget(titleLabel);
+        requestLayout->addWidget(authorLabel);
         requestLayout->addWidget(userLabel);
         requestLayout->addWidget(dateLabel);
         requestLayout->addWidget(statusLabel);
@@ -262,15 +323,15 @@ void LendingRequestsWidget::refreshRequestsList()
 
             QPushButton* approveBtn = new QPushButton("Genehmigen", actionsWidget);
             approveBtn->setObjectName("actionButton");
+			approveBtn->setFixedHeight(35);
             approveBtn->setProperty("requestId", requestId);
-            approveBtn->setFixedHeight(32);
-            approveBtn->setMinimumWidth(90);
+			approveBtn->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
             QPushButton* rejectBtn = new QPushButton("Ablehnen", actionsWidget);
             rejectBtn->setObjectName("cancelButton");
+			rejectBtn->setFixedHeight(35);
             rejectBtn->setProperty("requestId", requestId);
-            rejectBtn->setFixedHeight(32);
-            rejectBtn->setMinimumWidth(90);
+			rejectBtn->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
             connect(approveBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onApproveClicked);
             connect(rejectBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onRejectClicked);
@@ -281,22 +342,20 @@ void LendingRequestsWidget::refreshRequestsList()
 
             requestLayout->addWidget(actionsWidget, 1);
         }
-
         else {
-            // Dummy-Widget für die korrekte Ausrichtung
             QWidget* spacerWidget = new QWidget(requestWidget);
             requestLayout->addWidget(spacerWidget, 1);
         }
 
         requestWidget->setObjectName("requestItem");
         if (status == "pending") {
-            requestWidget->setStyleSheet("background-color: #FFFDE7;"); // Helles Gelb für ausstehend
+            requestWidget->setStyleSheet("background-color: #FFFDE7;");
         }
         else if (status == "approved") {
-            requestWidget->setStyleSheet("background-color: #E8F5E9;"); // Helles Grün für genehmigt
+            requestWidget->setStyleSheet("background-color: #E8F5E9;");
         }
         else if (status == "rejected") {
-            requestWidget->setStyleSheet("background-color: #FFEBEE;"); // Helles Rot für abgelehnt
+            requestWidget->setStyleSheet("background-color: #FFEBEE;");
         }
 
         requestsLayout->addWidget(requestWidget);
@@ -337,7 +396,7 @@ void LendingRequestsWidget::onRejectClicked()
     }
 }
 
-// Implementierung der fehlenden Methode onConfirmReturnClicked
+
 void LendingRequestsWidget::onConfirmReturnClicked()
 {
     QPushButton* button = qobject_cast<QPushButton*>(sender());
@@ -352,68 +411,10 @@ void LendingRequestsWidget::onConfirmReturnClicked()
     if (reply == QMessageBox::Yes) {
         if (db->confirmBookReturn(lendingId)) {
             QMessageBox::information(this, "Erfolg", "Die Rückgabe wurde erfolgreich bestätigt.");
-            refreshPendingReturns();
+            refreshReturnsList(); // <--- Ansicht aktualisieren!
         }
         else {
             QMessageBox::warning(this, "Fehler", "Die Rückgabe konnte nicht bestätigt werden.");
         }
-    }
-}
-
-void LendingRequestsWidget::refreshPendingReturns()
-{
-    pendingReturnsTable->setRowCount(0);
-    auto pendingReturns = db->getPendingReturns();
-
-    pendingReturnsTable->setRowCount(pendingReturns.size());
-    pendingReturnsTable->verticalHeader()->setDefaultSectionSize(44);
-    pendingReturnsTable->verticalHeader()->setVisible(false);
-    pendingReturnsTable->setAlternatingRowColors(true);
-
-    for (int i = 0; i < pendingReturns.size(); i++) {
-        QTableWidgetItem* idItem = new QTableWidgetItem(pendingReturns[i]["id"].toString());
-        QTableWidgetItem* userItem = new QTableWidgetItem(pendingReturns[i]["username"].toString());
-        QTableWidgetItem* titleItem = new QTableWidgetItem(pendingReturns[i]["title"].toString());
-
-        QDateTime lendDate = pendingReturns[i]["lend_date"].toDateTime();
-        QTableWidgetItem* lendDateItem = new QTableWidgetItem(lendDate.toString("dd.MM.yyyy hh:mm"));
-
-        QDateTime returnDate = pendingReturns[i]["return_date"].toDateTime();
-        QTableWidgetItem* returnDateItem = new QTableWidgetItem(returnDate.toString("dd.MM.yyyy hh:mm"));
-
-        pendingReturnsTable->setItem(i, 0, idItem);
-        pendingReturnsTable->setItem(i, 1, userItem);
-        pendingReturnsTable->setItem(i, 2, titleItem);
-        pendingReturnsTable->setItem(i, 3, lendDateItem);
-        pendingReturnsTable->setItem(i, 4, returnDateItem);
-        pendingReturnsTable->setRowHeight(i, 44);
-
-        // Action-Button oder Status
-        QWidget* buttonWidget = new QWidget();
-        QHBoxLayout* buttonLayout = new QHBoxLayout(buttonWidget);
-        buttonLayout->setContentsMargins(0, 0, 0, 0);
-
-        bool isConfirmed = pendingReturns[i]["confirmed_return"].toBool();
-
-        if (isConfirmed) {
-            QLabel* statusLabel = new QLabel("Bestätigt");
-            statusLabel->setObjectName("lendingstatusLabel");
-            buttonLayout->addWidget(statusLabel);
-        }
-
-        else {
-            QPushButton* confirmBtn = new QPushButton("Bestätigen");
-            confirmBtn->setObjectName("actionButton");
-            confirmBtn->setProperty("lendingId", pendingReturns[i]["id"].toInt());
-            confirmBtn->setFixedHeight(32);
-            confirmBtn->setMinimumWidth(90);
-            connect(confirmBtn, &QPushButton::clicked, this, &LendingRequestsWidget::onConfirmReturnClicked);
-            buttonLayout->addWidget(confirmBtn);
-        }
-
-        buttonLayout->addStretch();
-        pendingReturnsTable->setCellWidget(i, 5, buttonWidget);
-        pendingReturnsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-        pendingReturnsTable->setColumnWidth(0, 60);
     }
 }

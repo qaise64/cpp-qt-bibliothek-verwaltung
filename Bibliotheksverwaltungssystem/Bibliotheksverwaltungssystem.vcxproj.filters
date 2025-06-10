@@ -67,6 +67,9 @@
     <ClCompile Include="UserLendingsWidget.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="StatisticsWidget.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManager.h">
@@ -90,6 +93,9 @@
       <Filter>include</Filter>
     </QtMoc>
     <QtMoc Include="UserLendingsWidget.h">
+      <Filter>include</Filter>
+    </QtMoc>
+    <QtMoc Include="StatisticsWidget.h">
       <Filter>include</Filter>
     </QtMoc>
   </ItemGroup>

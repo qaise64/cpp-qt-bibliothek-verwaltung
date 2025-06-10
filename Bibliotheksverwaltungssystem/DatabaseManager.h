@@ -25,6 +25,14 @@ public:
     bool returnLendingRequest(int requestId);
     bool cancelLendingRequest(int requestId);
 
+	// Statistik-Methoden
+
+    int getTotalBooks();
+    int getAvailableBooks();
+    int getLentBooks();
+    int getTotalLendings();
+    double getAverageLendingDuration();
+
     // Neue Methoden
     bool confirmBookReturn(int lendingId);  // Für Bibliothekare, bestätigt Rückgabe
     bool extendLending(int lendingId, int additionalDays = 10); // Für Benutzer, verlängert Ausleihe

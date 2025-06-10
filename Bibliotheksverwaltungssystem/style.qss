@@ -459,7 +459,7 @@ QLabel[objectName^="sectionTitle"] {
 #okButton:hover {
     background-color: #27AE60;
 }
-#cancelButton {
+#dialogCancelButton {
     background-color: #E74C3C;
     color: white;
     border: none;
@@ -468,7 +468,7 @@ QLabel[objectName^="sectionTitle"] {
     height: 40px;
     font-weight: bold;
 }
-#cancelButton:hover {
+#dialogCancelButton:hover {
     background-color: #C0392B;
 }
 
@@ -590,207 +590,266 @@ QLabel[objectName^="sectionTitle"] {
     padding: 40px;
 }
 
-/* Einheitliche Buttons für Ausleihen & Anfragen */
-/* Buttons in Tabellen */
-QPushButton#actionButton {
-    min-width: 80px;
-    max-width: 120px;
-    min-height: 15px;
-    max-height: 20px;
+
+
+/* ===================== UserLendingsWidget ===================== */
+
+QWidget#UserLendingsWidget {
+    background-color: #F6F9FF;
     font-size: 15px;
-    font-weight: bold;
-    border-radius: 6px;
-    padding: 4px 14px;
-    margin: 0 2px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #2C3E50;
 }
 
-QPushButton#lendingcancelButton {
-    min-width: 80px;
-    max-width: 120px;
-    min-height: 15px;
-    max-height: 20px;
+/* Titel */
+QWidget#UserLendingsWidget QLabel#sectionTitle {
+    color: #1D3557;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+}
+
+/* Tabelle */
+QWidget#UserLendingsWidget QTableWidget#userLendingsTable {
+    background-color: #FFFFF0;
+    border: 1px solid #C0C5C9;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
     font-size: 15px;
-    font-weight: bold;
-    border-radius: 6px;
-    padding: 4px 0px;
-    margin: 0 2px;
-}
-
-
-QPushButton#actionButton {
-    background-color: #2196F3;
-    color: #FFFFF0;
-}
-QPushButton#actionButton:hover {
-    background-color: #1976D2;
-}
-QPushButton#lendingcancelButton {
-    background-color: #F44336;
-    color: #FFFFF0;
-}
-QPushButton#lendingcancelButton:hover {
-    background-color: #B71C1C;
-}
-
-/* Status-Label in Aktionen-Spalte */
-QLabel#lendingstatusLabel {
-    color: #FF6F00; /* Orange */
-    font-weight: bold;
-    font-size: 14px;
-    padding: 2px 8px;
-    border-radius: 4px;
+    selection-background-color: #E3EAFC;
+    selection-color: #2C3E50;
+    gridline-color: #DADADA;
 }
 
 /* Tabellen-Header */
-QHeaderView::section {
-    background-color: #f8f9fa;
-    color: #457B9D;
-    font-weight: bold;
-    font-size: 15px;
+QTableWidget#userLendingsTable QHeaderView::section {
+    background: #457B9D;
+    color: #FFF;
+    font-size: 16px;      
+    font-weight: 600;
     border: none;
-    padding: 10px 0;
+    padding: 5px 0;      
+    min-height: 30px;     
+    letter-spacing: 0.5px;
+
 }
 
-QTableWidget {
-    background: #FFFFFF;
-    border-radius: 8px;
+/* Tabellenzellen */
+QWidget#UserLendingsWidget QTableWidget::item {
     font-size: 14px;
-    border: 1px groove #b0b8c1;  
+    padding-left: 20px;
+    color: #22334a;
 }
 
-QTableWidget::item {
-    padding-left: 10px;
-}
+/* Buttons: Zurückgeben, Verlängern */
+QPushButton#userActionButton {
 
-/* --- TabWidget Styling für LendingRequestsWidget --- */
-QTabWidget::pane {
-    border: 1.5px solid #b0b8c1;
-    border-radius: 8px;
-    background: #FFFFF0;
-    
-}
-
-QTabBar::tab {
-    background: #f8f9fa;
-    color: #457B9D;
-    font-size: 15px;
-    font-weight: bold;
-    border: 1px solid #b0b8c1;
-    border-bottom: none;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    min-width: 180px;
-    min-height: 36px;
-    max-height:50px;
-    padding: 8px 18px;
-}
-
-QTabBar::tab:selected, QTabBar::tab:hover {
-    background: #FFD166;
-    color: #2c3e50;
-    border-bottom: 2px solid #FFD166;
-}
-
-QTabBar::tab:!selected {
-    
-}
-
-/* --- Tabellen für Anfragen und Rückgaben --- */
-QTableWidget {
-    background: #FFFFFF;
-    border-radius: 8px;
-    font-size: 14px;
-    border: 1px groove #b0b8c1;
-    selection-background-color: #e3eafc;
-    selection-color: #2c3e50;
-}
-
-QHeaderView::section {
-    background-color: #f8f9fa;
-    color: #457B9D;
-    font-weight: bold;
-    font-size: 15px;
+    background-color: #43A047;
+    color: #FFF;
     border: none;
-    padding: 10px 0;
-}
-
-QTableWidget::item {
-    padding-left: 10px;
-}
-
-QTableWidget::item:selected {
-    background: #e3eafc;
-    color: #2c3e50;
-}
-
-/* --- Buttons in Tabellen und Aktionen --- */
-QPushButton#actionButton {
-    min-width: 80px;
-    max-width: 120px;
-    min-height: 15px;
-    max-height: 20px;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 6px;
-    padding: 4px 14px;
-    margin: 0 2px;
-    background-color: #2196F3;
-    color: #FFFFF0;
-}
-QPushButton#actionButton:hover {
-    background-color: #1976D2;
-}
-
-QPushButton#lendingcancelButton {
-    min-width: 80px;
-    max-width: 120px;
-    min-height: 15px;
-    max-height: 20px;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 6px;
-    padding: 4px 0px;
-    margin: 0 2px;
-    background-color: #F44336;
-    color: #FFFFF0;
-}
-QPushButton#lendingcancelButton:hover {
-    background-color: #B71C1C;
-}
-
-/* --- Status-Label in Aktionen-Spalte --- */
-QLabel#lendingstatusLabel {
-    color: #FF6F00; /* Orange */
-    font-weight: bold;
-    font-size: 14px;
-    padding: 2px 8px;
     border-radius: 4px;
+    max-width: 150px;
+    min-height: 25px;
+    font-weight: bold;
+    padding: 3px 12px;
+
+}
+QPushButton#userActionButton:hover {
+    background-color: #2E7D32;
 }
 
-/* --- Requests-Header und Listenelemente --- */
-QWidget#requestsHeader {
-    background: #f8f9fa;
-    border-radius: 6px;
-    margin-bottom: 6px;
+/* Button: Abbrechen */
+QPushButton#userLendingCancelButton {
+
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    max-width: 150px;
+    min-height: 25px;
+    font-weight: bold;
+    padding: 3px 12px;
+
 }
-QWidget#requestItem {
-    border-radius: 6px;
-    margin-bottom: 6px;
-    padding: 4px 0;
+QPushButton#userLendingCancelButton:hover {
+    background-color: #C0392B;
 }
-QWidget#requestItem[status="pending"] {
+
+/* Status-Label */
+QLabel#lendingstatusLabel {
+    font-size: 14px;
+    padding: 2px 10px;
+    color: #FF6F00;
+    min-width: 0;
+    min-height: 0;
+    font-weight: 600;
+}
+
+
+
+/* ===================== LendingRequestsWidget ===================== */
+
+QWidget#LendingRequestsWidget {
+    background-color: #FFFDF6;
+    font-size: 15px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #2C3E50;
+}
+
+/* Section Title */
+QWidget#LendingRequestsWidget QLabel#sectionTitle {
+    color: #2C3E50;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* Request & Return Containers */
+QWidget#LendingRequestsWidget QWidget#requestsContainer,
+QWidget#LendingRequestsWidget QWidget#returnsContainer {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+/* Header Row */
+QWidget#LendingRequestsWidget QWidget#requestsHeader {
+    background-color: #F1F4F8;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+QWidget#requestsHeader QLabel {
+
+    font-size: 16px;
+    padding: 4px 18px;
+    color: #22334a;
+    letter-spacing: 0.5px;
+
+}
+
+QWidget#LendingRequestsWidget QHeaderView::section {
+    background: transparent;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    padding: 12px 0;
+    min-height: 36px;
+    letter-spacing: 0.5px;
+}
+
+/* Request Items */
+QWidget#LendingRequestsWidget QWidget#requestItem {
+    
+}
+
+QWidget#LendingRequestsWidget QWidget#requestItem QLabel {
+
+    font-size: 15px;
+    margin:0;
+    color: #22334a;
+    padding: 7px 18px;
+    radius: 0px;
+
+}
+
+QWidget#LendingRequestsWidget QWidget#requestItem[status="pending"] {
     background-color: #FFFDE7;
 }
-QWidget#requestItem[status="approved"] {
+QWidget#LendingRequestsWidget QWidget#requestItem[status="approved"] {
     background-color: #E8F5E9;
 }
-QWidget#requestItem[status="rejected"] {
+QWidget#LendingRequestsWidget QWidget#requestItem[status="rejected"] {
     background-color: #FFEBEE;
 }
 
-/* --- Allgemeine Layouts --- */
-QWidget#requestsContainer, QWidget#returnsContainer {
-    background: transparent;
-    border-radius: 8px;
-    padding: 0;
+/* Status Label */
+QWidget#LendingRequestsWidget QLabel#lendingstatusLabel {
+    background-color: #FFF3E0;
+    color: #FF6F00;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 2px 10px;
+    border-radius: 4px;
+}
+
+/* Action Buttons  */ 
+
+QPushButton#actionButton {
+
+    background-color: #457B9D;
+    color: #457B9D;
+    border-radius: 6px;
+    font-weight: 650;
+    padding: 4px 14px;
+    min-width: 100px;
+    max-width: 150px;
+    font-size: 14px;
+    border: 1px solid #457B9D;
+    transition: background 0.2s;
+
+}
+
+QPushButton#actionButton:hover {
+
+    border: 1px solid #1565C0;
+    color:  #1565C0;
+
+}
+
+
+QPushButton#cancelButton {
+
+      background-color: #F44336;
+      color: #F44336;
+      border-radius: 6px;
+      font-weight: 650;
+      padding: 4px 14px;
+      min-width: 100px;
+      font-size: 14px;
+      border: 1px solid #F44336;
+      transition: background 0.2s;
+
+  }
+
+QPushButton#cancelButton:hover {
+
+      border: 1px solid #B71C1C;
+      color: #B71C1C;
+
+  }
+
+/* Tab Widget */
+QWidget#LendingRequestsWidget QTabWidget::pane {
+    background: #FFFFF0;
+    border: 1 solid #B0B8C1;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+/* Tab Items */
+QWidget#LendingRequestsWidget QTabBar::tab {
+    background: #F8F9FA;
+    color: #457B9D;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #B0B8C1;
+    border-bottom: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    min-width: 180px;
+    min-height: 25px;
+    max-height: 25px;
+    padding: 6px 18px;
+}
+
+QWidget#LendingRequestsWidget QTabBar::tab:selected,
+QWidget#LendingRequestsWidget QTabBar::tab:hover {
+    background-color: #FFD166;
+    color: #2C3E50;
+    border-bottom: 2px solid #FFD166;
 }

@@ -11,16 +11,11 @@
 #include "LendingRequestsWidget.h"
 #include "UserLendingsWidget.h"
 #include <QDateTime>
+#include "StatisticsWidget.h"
 #include <QtWidgets/QApplication>
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-    // Hier könnten Speicher- oder Aufräumoperationen durchgeführt werden
-
-    // Beende die Anwendung vollständig
-    QApplication::quit();
-
-    // Akzeptiere das Schließen-Event
     event->accept();
 }
 
@@ -131,6 +126,8 @@ void MainWindow::setupNavbar()
     connect(closeButton, &QPushButton::clicked, this, &QWidget::close);
     connect(minimizeButton, &QPushButton::clicked, this, &QWidget::showMinimized);
 
+
+
 }
 
 void MainWindow::clearFunctionBar()
@@ -195,6 +192,13 @@ void MainWindow::setupFunctionBar(const QString& role)
 
             if (info.objName == "btnManageLendings") {
                 connect(btn, &QPushButton::clicked, this, &MainWindow::showLendingRequests);
+            }
+
+            if (info.objName == "btnStatistics") {
+                connect(btn, &QPushButton::clicked, this, [this]() {
+                    auto* statsWidget = new StatisticsWidget(db, mainContentWidget);
+                    showCentralContent(statsWidget, QSize());
+                    });
             }
         }
     }
