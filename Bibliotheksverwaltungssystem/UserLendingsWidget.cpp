@@ -37,18 +37,15 @@ void UserLendingsWidget::setupUI()
     headers << "ID" << "Buch" << "Autor" << "Ausleihdatum" << "Fälligkeitsdatum" << "Status" << "Aktionen";
     lendingsTable->setHorizontalHeaderLabels(headers);
 
-    // Zuerst alle Spalten auf Stretch setzen
     lendingsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    // Dann die ID-Spalte (0) auf Fixed setzen und Breite anpassen
+
     lendingsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
     lendingsTable->setColumnWidth(0, 60);
 
     lendingsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     lendingsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    // Entferne diese Zeile!
-    // lendingsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     mainLayout->addWidget(lendingsTable, 1);
 }

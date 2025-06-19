@@ -57,8 +57,6 @@ bool DatabaseManager::createTables() {
         return false;
     }
 
-    // Prüfen, ob alle erforderlichen Spalten existieren und ggf. hinzufügen
-    // Prüfung für description
     query.exec("PRAGMA table_info(books)");
     bool hasDescription = false;
     bool hasImage = false;
@@ -645,7 +643,7 @@ bool DatabaseManager::createLendingRequest(int bookId, int userId) {
 }
 
 
-// Neue Methode zur Bestätigung der Rückgabe
+
 bool DatabaseManager::confirmBookReturn(int lendingId) {
     // Transaktion starten für Atomarität
     db.transaction();
@@ -753,12 +751,12 @@ QVector<QHash<QString, QVariant>> DatabaseManager::getPendingReturns() {
     QSqlQuery query(db);
     query.prepare(
         "SELECT l.id, l.book_id, l.user_id, l.lend_date, l.return_date, "
-        "IFNULL(l.confirmed_return, 0) as confirmed_return, "  // Hinzugefügt, um bestätigte Rückgaben abzufragen
+        "IFNULL(l.confirmed_return, 0) as confirmed_return, "  
         "b.title, b.author, u.username "
         "FROM lendings l "
         "JOIN books b ON l.book_id = b.id "
         "JOIN users u ON l.user_id = u.id "
-        "WHERE l.returned = 1 "  // Alle zurückgegebenen Bücher abfragen, nicht nur die unbestätigten
+        "WHERE l.returned = 1 " 
         "ORDER BY l.return_date DESC"
     );
 

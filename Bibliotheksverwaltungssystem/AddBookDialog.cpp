@@ -12,21 +12,45 @@
 
 AddBookDialog::AddBookDialog(QWidget* parent)
     : QWidget(parent)
-
 {
-	// Objekt-Initialisierung
+    // --- Hauptlayout: vertikal zentriert alles ---
+    QVBoxLayout* outerLayout = new QVBoxLayout(this);
+    outerLayout->setContentsMargins(0, 0, 0, 0);
+    outerLayout->setSpacing(0);
 
-	titleEdit = new QLineEdit(this);
-	authorEdit = new QLineEdit(this);
-	yearSpinBox = new QSpinBox(this);
-	statusComboBox = new QComboBox(this);
-	descriptionEdit = new QTextEdit(this);
-	imageLabel = new QLabel(this);
-	selectImageButton = new QPushButton("Bild auswählen", this);
-	okButton = new QPushButton("Hinzufügen", this);
-	cancelButton = new QPushButton("Abbrechen", this);
+    // Stretch oben
+    outerLayout->addStretch();
 
-    // Objekt-Namen setzen
+    // --- Zentrierter Bereich für Titel, Linien, Formular, Buttons ---
+    QWidget* centerWidget = new QWidget(this);
+    QVBoxLayout* centerLayout = new QVBoxLayout(centerWidget);
+    centerLayout->setContentsMargins(0, 0, 0, 0);
+    centerLayout->setSpacing(0);
+
+    // --- Titel ---
+    QLabel* dialogTitle = new QLabel("Buch hinzufügen", this);
+    dialogTitle->setAlignment(Qt::AlignCenter);
+    dialogTitle->setObjectName("sectionTitle");
+    centerLayout->addWidget(dialogTitle, 0, Qt::AlignCenter);
+
+    // --- Linie unter Titel ---
+    centerLayout->addSpacing(10);
+    QFrame* titleLine = new QFrame(this);
+    titleLine->setFrameShape(QFrame::HLine);
+    titleLine->setFrameShadow(QFrame::Sunken);
+    centerLayout->addWidget(titleLine);
+    centerLayout->addSpacing(24);
+
+    // --- Formular-Objekte ---
+    titleEdit = new QLineEdit(this);
+    authorEdit = new QLineEdit(this);
+    yearSpinBox = new QSpinBox(this);
+    statusComboBox = new QComboBox(this);
+    descriptionEdit = new QTextEdit(this);
+    imageLabel = new QLabel(this);
+    selectImageButton = new QPushButton("Bild auswählen", this);
+    okButton = new QPushButton("Hinzufügen", this);
+    cancelButton = new QPushButton("Abbrechen", this);
 
     this->setObjectName("addBookWidget");
     titleEdit->setObjectName("titleEdit");
@@ -39,161 +63,135 @@ AddBookDialog::AddBookDialog(QWidget* parent)
     okButton->setObjectName("okButton");
     cancelButton->setObjectName("dialogCancelButton");
 
-    // Feste Breite für das Formular
+    this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    this->setFixedWidth(600);
-	this->setFixedHeight(1000);
-
-    // FONTS KONFIGURIEREN
-
-    QFont sectionFont("Arial", 12, QFont::Bold);
     QFont labelFont("Arial", 10);
-    QFont fieldFont("Arial", 10);
-
-    // ALLGEMEINE STYLING-PARAMETER
 
     const int fieldHeight = 40;
-    const int formSpacing = 24;  
-    const int labelSpacing = 8;  
+    const int formSpacing = 18;
 
-    // Placeholder-Texte
     titleEdit->setPlaceholderText("Titel eingeben...");
     authorEdit->setPlaceholderText("Autor eingeben...");
     descriptionEdit->setPlaceholderText("Kurze Beschreibung des Buchs...");
 
-    // Jahr-Spinbox konfigurieren
     yearSpinBox->setRange(1000, 2100);
     yearSpinBox->setValue(2024);
     yearSpinBox->setButtonSymbols(QAbstractSpinBox::NoButtons);
 
-    // Statusdropdown konfigurieren
     statusComboBox->addItems({ "verfügbar", "ausgeliehen" });
 
-    // Einheitliche Höhe für alle Eingabefelder
-
     descriptionEdit->setMinimumHeight(120);
-    
-    // Jahr- und Status-Feldbreiten
-    yearSpinBox->setFixedWidth(250);
-    statusComboBox->setFixedWidth(250);
+    yearSpinBox->setFixedHeight(fieldHeight);
+    statusComboBox->setFixedHeight(fieldHeight);
 
-    // Bild-Vorschau konfigurieren
-    imageLabel->setFixedSize(300, 200);
     imageLabel->setAlignment(Qt::AlignCenter);
     imageLabel->setText("Bildvorschau erscheint hier nach Auswahl");
     imageLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    imageLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    descriptionEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    yearSpinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    statusComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    // SECTION DIVIDERS (horizontale Trennlinien)
-    auto createDivider = [this]() {
-        QFrame* line = new QFrame(this);
-        line->setFrameShape(QFrame::HLine);
-        line->setFrameShadow(QFrame::Sunken);
-        return line;
-        };
+    // --- Linker Bereich: Titel, Autor, Jahr, Status ---
+    QVBoxLayout* leftLayout = new QVBoxLayout;
+    leftLayout->setSpacing(formSpacing);
 
-    // SECTION TITLES (Abschnittsüberschriften)
-    auto createSectionTitle = [this, sectionFont](const QString& title) {
-        QLabel* label = new QLabel(title, this);
-        label->setFont(sectionFont);
-        return label;
-        };
-
-    // LAYOUTS ERSTELLEN
-
-    // Hauptlayout mit größerem Rand
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(40, 40, 40, 40);
-    mainLayout->setSpacing(formSpacing);
-
-    // Abschnitt: Buchinformationen
-    mainLayout->addWidget(createSectionTitle("Buchinformationen"));
-
-    // Titel
     QLabel* titleLabel = new QLabel("Titel:", this);
     titleLabel->setFont(labelFont);
-    QVBoxLayout* titleLayout = new QVBoxLayout;
-    titleLayout->setSpacing(labelSpacing);
-    titleLayout->addWidget(titleLabel);
-    titleLayout->addWidget(titleEdit);
-    mainLayout->addLayout(titleLayout);
+    leftLayout->addWidget(titleLabel);
+    leftLayout->addWidget(titleEdit);
 
-    // Autor
     QLabel* authorLabel = new QLabel("Autor:", this);
     authorLabel->setFont(labelFont);
-    QVBoxLayout* authorLayout = new QVBoxLayout;
-    authorLayout->setSpacing(labelSpacing);
-    authorLayout->addWidget(authorLabel);
-    authorLayout->addWidget(authorEdit);
-    mainLayout->addLayout(authorLayout);
+    leftLayout->addWidget(authorLabel);
+    leftLayout->addWidget(authorEdit);
 
-    // Jahr und Status in einer Reihe mit eigenen Labels
+    QHBoxLayout* yearStatusLayout = new QHBoxLayout;
     QLabel* yearLabel = new QLabel("Jahr:", this);
     yearLabel->setFont(labelFont);
     QLabel* statusLabel = new QLabel("Status:", this);
     statusLabel->setFont(labelFont);
 
-    // Container für Jahr und Status
-    QHBoxLayout* yearStatusContainer = new QHBoxLayout;
-    yearStatusContainer->setSpacing(20);
-
-    // Jahr-Container
     QVBoxLayout* yearLayout = new QVBoxLayout;
-    yearLayout->setSpacing(labelSpacing);
     yearLayout->addWidget(yearLabel);
     yearLayout->addWidget(yearSpinBox);
-    yearStatusContainer->addLayout(yearLayout);
 
-    // Status-Container
     QVBoxLayout* statusLayout = new QVBoxLayout;
-    statusLayout->setSpacing(labelSpacing);
     statusLayout->addWidget(statusLabel);
     statusLayout->addWidget(statusComboBox);
-    yearStatusContainer->addLayout(statusLayout);
 
-    // Füge restlichen Platz als Dehnung hinzu
-    yearStatusContainer->addStretch();
+    yearStatusLayout->addLayout(yearLayout, 1);
+    yearStatusLayout->addSpacing(8);
+    yearStatusLayout->addLayout(statusLayout, 1);
 
-    mainLayout->addLayout(yearStatusContainer);
+    leftLayout->addLayout(yearStatusLayout);
+    leftLayout->addStretch();
 
-    // Beschreibung
+    // --- Mittlerer Bereich: Beschreibung ---
+    QVBoxLayout* centerFormLayout = new QVBoxLayout;
+    centerFormLayout->setSpacing(formSpacing);
     QLabel* descLabel = new QLabel("Beschreibung:", this);
     descLabel->setFont(labelFont);
-    mainLayout->addWidget(descLabel);
-    mainLayout->addWidget(descriptionEdit);
+    centerFormLayout->addWidget(descLabel);
+    centerFormLayout->addWidget(descriptionEdit, 1);
+    centerFormLayout->addStretch();
 
-    // Trennlinie nach Buchinformationen
-    mainLayout->addWidget(createDivider());
+    // --- Rechter Bereich: Cover & Buttons ---
+    QVBoxLayout* rightLayout = new QVBoxLayout;
+    rightLayout->setSpacing(formSpacing);
+    QLabel* coverLabel = new QLabel("Buchcover", this);
+    coverLabel->setFont(labelFont);
+    rightLayout->addWidget(coverLabel);
+    rightLayout->addWidget(selectImageButton);
+    rightLayout->addWidget(imageLabel, 1);
+    rightLayout->addStretch();
 
-    // Abschnitt: Buchcover
-    mainLayout->addWidget(createSectionTitle("Buchcover"));
+    // --- Vertikale Trennlinien ---
+    QFrame* line1 = new QFrame(this);
+    line1->setFrameShape(QFrame::VLine);
+    line1->setFrameShadow(QFrame::Sunken);
 
-    // Bildauswahl-Button und Vorschau
+    QFrame* line2 = new QFrame(this);
+    line2->setFrameShape(QFrame::VLine);
+    line2->setFrameShadow(QFrame::Sunken);
 
-    selectImageButton->setFixedHeight(fieldHeight);
-    selectImageButton->setCursor(Qt::PointingHandCursor);
+    // --- Formular-Hauptlayout ---
+    QWidget* formContainer = new QWidget(this);
+    formContainer->setMaximumWidth(1400);
+    formContainer->setMinimumWidth(1200);
+    formContainer->setMaximumHeight(500);
+    QHBoxLayout* mainLayout = new QHBoxLayout(formContainer);
+    mainLayout->setContentsMargins(24, 24, 24, 24);
+    mainLayout->setSpacing(16);
+    mainLayout->addLayout(leftLayout, 3);
+    mainLayout->addWidget(line1);
+    mainLayout->addLayout(centerFormLayout, 3);
+    mainLayout->addWidget(line2);
+    mainLayout->addLayout(rightLayout, 2);
 
-    mainLayout->addWidget(selectImageButton);
-    mainLayout->addWidget(imageLabel, 0, Qt::AlignCenter);
+    centerLayout->addWidget(formContainer, 0, Qt::AlignCenter);
 
-    // Trennlinie vor Aktionsbuttons
-    mainLayout->addWidget(createDivider());
-    mainLayout->addSpacing(10);
+    // --- Linie zwischen Formular und Buttons ---
+    centerLayout->addSpacing(16);
+    QFrame* formButtonLine = new QFrame(this);
+    formButtonLine->setFrameShape(QFrame::HLine);
+    formButtonLine->setFrameShadow(QFrame::Sunken);
+    centerLayout->addWidget(formButtonLine);
+    centerLayout->addSpacing(10);
 
-    // Aktion-Buttons
+    // --- Buttons ---
     QHBoxLayout* buttonLayout = new QHBoxLayout;
     buttonLayout->addStretch();
-
-
-    okButton->setFixedSize(150, fieldHeight);
-    cancelButton->setFixedSize(150, fieldHeight);
-    okButton->setCursor(Qt::PointingHandCursor);
-    cancelButton->setCursor(Qt::PointingHandCursor);
-
     buttonLayout->addWidget(cancelButton);
-    buttonLayout->addSpacing(16);
+    buttonLayout->addSpacing(12);
     buttonLayout->addWidget(okButton);
+    buttonLayout->addStretch();
+    centerLayout->addLayout(buttonLayout);
+    centerLayout->addSpacing(8);
 
-    mainLayout->addLayout(buttonLayout);
+    // --- Alles vertikal zentrieren ---
+    outerLayout->addWidget(centerWidget, 0, Qt::AlignCenter);
+    outerLayout->addStretch();
 
     // Signal-Verbindungen
     connect(selectImageButton, &QPushButton::clicked, this, &AddBookDialog::on_selectImageButton_clicked);
@@ -223,7 +221,6 @@ void AddBookDialog::on_selectImageButton_clicked()
         }
     }
 }
-
 
 void AddBookDialog::setBookData(int id, const QString& title, const QString& author,
     int year, const QString& status, const QString& description,

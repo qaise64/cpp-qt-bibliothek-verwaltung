@@ -56,7 +56,7 @@ void LendingRequestsWidget::setupUI()
     requestsTable->setAlternatingRowColors(true);
     requestsTable->hide();
 
-    // Modernes Layout für Anfragen
+    // Layout für Anfragen
     QWidget* requestsContainer = new QWidget(requestsWidget);
     requestsLayout = new QVBoxLayout(requestsContainer);
     requestsLayout->setContentsMargins(0, 0, 0, 0);

@@ -96,14 +96,14 @@ void MainWindow::setupNavbar()
     rightNavWidget->setMinimumHeight(110);
     rightNavWidget->setFixedHeight(30);
 
-    minimizeButton = new QPushButton("");
+    minimizeButton = new QPushButton(rightNavWidget);
     minimizeButton->setIcon(QIcon(":/resources/icons/navbar/minimize2.svg"));
     minimizeButton->setObjectName("minimizeButton");
     minimizeButton->setFixedSize(50, 30);
     minimizeButton->setIconSize(QSize(20, 20));
     minimizeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    closeButton = new QPushButton("");
+    closeButton = new QPushButton(rightNavWidget);
     closeButton->setIcon(QIcon(":/resources/icons/navbar/close2.svg"));
     closeButton->setObjectName("closeButton");
     closeButton->setFixedSize(50, 30);
@@ -130,23 +130,7 @@ void MainWindow::setupNavbar()
 
 }
 
-void MainWindow::clearFunctionBar()
-{
-    if (functionBarLayout) {
-        // Funktionsleiste sofort ausblenden
-        if (functionBar)
-            functionBar->setVisible(false);
 
-        QLayoutItem* item;
-        while ((item = functionBarLayout->takeAt(0)) != nullptr) {
-            if (QWidget* w = item->widget()) {
-                w->deleteLater();
-            }
-            delete item;
-        }
-        functionButtons.clear();
-    }
-}
 
 void MainWindow::setupFunctionBar(const QString& role)
 {
@@ -232,6 +216,24 @@ void MainWindow::setupFunctionBar(const QString& role)
     functionBarLayout->addStretch();
 }
 
+void MainWindow::clearFunctionBar()
+{
+    if (functionBarLayout) {
+        // Funktionsleiste sofort ausblenden
+        if (functionBar)
+            functionBar->setVisible(false);
+
+        QLayoutItem* item;
+        while ((item = functionBarLayout->takeAt(0)) != nullptr) {
+            if (QWidget* w = item->widget()) {
+                w->deleteLater();
+            }
+            delete item;
+        }
+        functionButtons.clear();
+    }
+}
+
 void MainWindow::setRole(const QString& role)
 {
     QLayoutItem* item;
@@ -265,40 +267,13 @@ void MainWindow::setRole(const QString& role)
 
 void MainWindow::showCentralContent(QWidget* contentWidget, QSize fixedSize)
 {
-    // Vorherigen Inhalt entfernen
     QLayoutItem* item;
     while ((item = mainContentLayout->takeAt(0)) != nullptr) {
         if (QWidget* w = item->widget()) w->deleteLater();
         delete item;
     }
 
-    if (fixedSize.isValid()) {
-        // Zentrierender Container mit fester Größe
-        QWidget* centerContainer = new QWidget(mainContentWidget);
-        QVBoxLayout* vLayout = new QVBoxLayout(centerContainer);
-        vLayout->addStretch();
-
-        QHBoxLayout* hLayout = new QHBoxLayout();
-        hLayout->addStretch();
-
-        contentWidget->setFixedSize(fixedSize);
-
-        hLayout->addWidget(contentWidget);
-        hLayout->addStretch();
-
-        vLayout->addLayout(hLayout);
-        vLayout->addStretch();
-
-        mainContentLayout->addWidget(centerContainer);
-
-    }
-    else {
-
-        // Content soll den gesamten Platz einnehmen
-        mainContentLayout->addWidget(contentWidget);
-
-    }
-
+    mainContentLayout->addWidget(contentWidget);
 }
 
 void MainWindow::addBookDialog()
@@ -330,10 +305,16 @@ void MainWindow::addBookDialog()
         });
 
     connect(addBookWidget->getCancelButton(), &QPushButton::clicked, this, [=]() {
-        showCentralContent(new QLabel("Vorgang abgebrochen.", mainContentWidget), QSize(300, 100));
+        QLabel* cancelLabel = new QLabel("Vorgang abgebrochen.", mainContentWidget);
+        cancelLabel->setAlignment(Qt::AlignCenter);
+        cancelLabel->setObjectName("successMessage");
+        QFont font = cancelLabel->font();
+        font.setPointSize(14);
+        cancelLabel->setFont(font);
+        showCentralContent(cancelLabel, QSize(300, 100));
         });
 
-    showCentralContent(addBookWidget, QSize(600, 1050));
+    showCentralContent(addBookWidget,QSize());
 
 }
 
@@ -398,7 +379,7 @@ void MainWindow::editBookDialog(int bookId)
         showBooksOverview();
         });
 
-    showCentralContent(editBookWidget, QSize(600, 1050));
+    showCentralContent(editBookWidget, QSize(1000, 400));
 }
 
 

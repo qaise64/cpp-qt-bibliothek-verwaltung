@@ -44,7 +44,7 @@ StatisticsWidget::StatisticsWidget(DatabaseManager* db, QWidget* parent)
     int totalLendings = db->getTotalLendings();
     double avgDuration = db->getAverageLendingDuration();
 
-    // Professionelle Darstellung der Kennzahlen
+    // Darstellung der Kennzahlen
     auto addStat = [&](const QString& label, const QString& value, const QString& unit = QString()) {
         QHBoxLayout* row = new QHBoxLayout();
         row->setAlignment(Qt::AlignCenter);
@@ -73,7 +73,7 @@ StatisticsWidget::StatisticsWidget(DatabaseManager* db, QWidget* parent)
     addStat("Anzahl Ausleihen", QString::number(totalLendings));
     addStat("Ø Ausleihdauer", QString::number(avgDuration, 'f', 2), "Tage");
 
-    // Rechte Seite: Kreisdiagramm, vertikal & horizontal zentriert, 2x größer
+    // Rechte Seite: Kreisdiagramm, vertikal & horizontal zentriert
     QVBoxLayout* chartLayout = new QVBoxLayout();
     chartLayout->setContentsMargins(0, 0, 0, 0);
     chartLayout->setAlignment(Qt::AlignCenter);
@@ -106,7 +106,7 @@ StatisticsWidget::StatisticsWidget(DatabaseManager* db, QWidget* parent)
 
     QChartView* chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setMinimumSize(700, 700); // 2x größer als vorher (vorher 350x350)
+    chartView->setMinimumSize(700, 700); 
     chartView->setMaximumSize(900, 900);
     chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     chartView->setStyleSheet("background: transparent;");

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-
 class Bibliotheksverwaltungssystem : public QMainWindow
 {
     Q_OBJECT

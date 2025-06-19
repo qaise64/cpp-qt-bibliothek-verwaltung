@@ -39,6 +39,7 @@ QWidget#navBar {
     color:              #FFFFF0;
     margin:            0px;
     padding:           0px;
+   
 }
 
 QLabel#logoLabel {
@@ -144,16 +145,18 @@ QWidget#leftWidgetLibrarian {
 
 QLabel#willkommenLabel {
     color:             #457B9D;    /* Deep Blue */
-    font-size:         32px;
+    font-size:         28px;
     font-weight:       bold;
-    margin-left:       20px;
+    margin-bottom:     200px;
+ 
 }
 
 QLabel#willkommenLabelLibrarian {
     color:             #1d3557;   
-    font-size:         32px;
+    font-size:         28px;
     font-weight:       bold;
-    margin-left:       20px;
+    margin-bottom:     200px;
+
 }
 
 
@@ -399,6 +402,12 @@ QPushButton#btnMyLendings:pressed {
 */
 
 
+QLabel#sectionTitle {
+    color: #2C3E50;
+    font: bold 16pt "Arial";
+    margin-bottom: 15px;
+}
+
 /* --- Eingabefelder --- */
 #titleEdit, #authorEdit, #yearSpinBox, #statusComboBox {
     border: 1px solid #CED4DA;
@@ -418,9 +427,7 @@ QPushButton#btnMyLendings:pressed {
 
 /* --- Bildvorschau --- */
 #imageLabel {
-    background-color: white;
-    color: #6C757D;
-    border: 1px solid #CED4DA;
+ 
 }
 
 /* --- Trennlinien --- */
@@ -441,7 +448,8 @@ QLabel[objectName^="sectionTitle"] {
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
-    height: 40px;
+    min-height: 30px;
+    max-height: 30px;
     font-weight: bold;
 }
 #selectImageButton:hover {
@@ -453,8 +461,11 @@ QLabel[objectName^="sectionTitle"] {
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
-    height: 40px;
+    min-height:30px;
+    min-width: 150px;
     font-weight: bold;
+    margin-top: 20px;
+    margin-left: 10px;
 }
 #okButton:hover {
     background-color: #27AE60;
@@ -465,8 +476,10 @@ QLabel[objectName^="sectionTitle"] {
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
-    height: 40px;
+    min-height: 30px;
+    min-width: 150px;
     font-weight: bold;
+    margin-top:20px;
 }
 #dialogCancelButton:hover {
     background-color: #C0392B;

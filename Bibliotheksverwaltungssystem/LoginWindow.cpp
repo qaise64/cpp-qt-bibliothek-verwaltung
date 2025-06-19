@@ -32,6 +32,45 @@ void LoginWindow::closeEvent(QCloseEvent* event)
 
 }
 
+class ResponsiveImageLabel : public QLabel {
+public:
+    ResponsiveImageLabel(const QString& svgPath, QWidget* parent = nullptr)
+        : QLabel(parent), m_svgPath(svgPath) {
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        setAlignment(Qt::AlignCenter);
+        loadSvg();
+    }
+    void setSvg(const QString& svgPath) { m_svgPath = svgPath; loadSvg(); }
+protected:
+    void resizeEvent(QResizeEvent* event) override {
+        QLabel::resizeEvent(event);
+        loadSvg();
+    }
+private:
+    QString m_svgPath;
+    void loadSvg() {
+        if (m_svgPath.isEmpty()) return;
+        QSvgRenderer renderer(m_svgPath);
+        QSize targetSize = size();
+        if (targetSize.width() < 10 || targetSize.height() < 10) return;
+        QSize originalSize = renderer.defaultSize();
+        if (originalSize.isEmpty()) originalSize = QSize(1000, 800);
+
+        // Seitenverhältnis erhalten
+        QSize scaledSize = originalSize;
+        scaledSize.scale(targetSize, Qt::KeepAspectRatio);
+
+        QPixmap pixmap(targetSize);
+        pixmap.fill(Qt::transparent);
+        QPainter painter(&pixmap);
+        QRect rect(QPoint((targetSize.width() - scaledSize.width()) / 2,
+            (targetSize.height() - scaledSize.height()) / 2),
+            scaledSize);
+        renderer.render(&painter, rect);
+        setPixmap(pixmap);
+    }
+};
+
 LoginWindow::LoginWindow(QWidget* parent)
     : QMainWindow(parent)
 {
@@ -135,30 +174,10 @@ LoginWindow::LoginWindow(QWidget* parent)
     leftContentLayout = new QVBoxLayout(leftContentWidget);
 
 
-    imageLabel = new QLabel(leftContentWidget);
-    imageLabel->setAlignment(Qt::AlignCenter);
-
-
-    // Desired size to render the SVG
-    int targetWidth = 1000;
-
-    // Load SVG renderer
-    QSvgRenderer renderer(QString(":/resources/icons/navbar/user.svg"));
-
-    // Calculate target height to keep aspect ratio
-    QSize originalSize = renderer.defaultSize();
-    int targetHeight = (originalSize.height() * targetWidth) / originalSize.width();
-
-    // Prepare a transparent pixmap of target size
-    QPixmap pixmap(targetWidth, targetHeight);
-    pixmap.fill(Qt::transparent);
-
-    // Render SVG into pixmap
-    QPainter painter(&pixmap);
-    renderer.render(&painter);
-
     // Set pixmap on label
-    imageLabel->setPixmap(pixmap);
+    imageLabel = new ResponsiveImageLabel(":/resources/icons/navbar/user.svg", leftContentWidget);
+	imageLabel->setObjectName("imageLabel");
+
 
     auto updateLeftPanelAppearance = [&](const QString& role) {
 
@@ -177,15 +196,9 @@ LoginWindow::LoginWindow(QWidget* parent)
             willkommenObjectName = "willkommenLabelLibrarian"; 
         }
 
-        QSvgRenderer renderer(svgPath);
-        QSize originalSize = renderer.defaultSize();
-        int targetWidth = 1000;
-        int targetHeight = (originalSize.height() * targetWidth) / originalSize.width();
-        QPixmap pixmap(targetWidth, targetHeight);
-        pixmap.fill(Qt::transparent);
-        QPainter painter(&pixmap);
-        renderer.render(&painter);
-        imageLabel->setPixmap(pixmap);
+
+		// Change the SVG path and object names based on the role
+        static_cast<ResponsiveImageLabel*>(imageLabel)->setSvg(svgPath);
 
         leftContentWidget->setObjectName(objectNameForStyle);
         leftContentWidget->style()->unpolish(leftContentWidget);
@@ -204,10 +217,9 @@ LoginWindow::LoginWindow(QWidget* parent)
     willkommenLabel->setAlignment(Qt::AlignCenter);
 
 
-    leftContentLayout->addStretch();
-    leftContentLayout->addWidget(imageLabel, 0, Qt::AlignHCenter);
-    leftContentLayout->addWidget(willkommenLabel, 0, Qt::AlignHCenter);
-    leftContentLayout->addStretch();
+    leftContentLayout->addSpacing(150);
+    leftContentLayout->addWidget(imageLabel, Qt::AlignBottom | Qt::AlignHCenter);
+    leftContentLayout->addWidget(willkommenLabel, Qt::AlignTop | Qt::AlignHCenter);
 
 
     // Rechte Seite: Login-Formular

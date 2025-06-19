@@ -10,19 +10,31 @@
 MainWindow* g_mainWindow = nullptr;
 
 int main(int argc, char* argv[]) {
+
+	// Set the application name and organization
+
     QApplication a(argc, argv);
+
+    
+	// qss syle sheet loading
     QFile styleFile("style.qss");
     if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream ts(&styleFile);
         a.setStyleSheet(ts.readAll());
     }
 
+	// Set the application icon and window icon
+
     a.setWindowIcon(QIcon(":/resources/icons/windowicon.svg"));
 
+
+	// set database connection and create tables
     DatabaseManager db;
     db.openDatabase("library.db");
     db.createTables();
 
+
+    
     LoginWindow* loginWindow = nullptr;
     std::function<void(const QString&, const QString&, const QString&)> handleLogin;
 

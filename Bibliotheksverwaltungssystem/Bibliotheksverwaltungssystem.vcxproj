@@ -102,7 +102,12 @@
     <QtMoc Include="Bibliotheksverwaltungssystem.h" />
     <ClCompile Include="Bibliotheksverwaltungssystem.cpp" />
     <ClCompile Include="DatabaseManager.cpp" />
-    <ClCompile Include="LoginWindow.cpp" />
+    <ClCompile Include="LoginWindow.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
