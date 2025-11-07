@@ -40,36 +40,36 @@ Die Anwendung verfuegt ueber zwei separate Rollen mit unterschiedlichen Zugaenge
 ---
 
 **1. Login & Rollen-Auswahl**
-![Login-Bildschirm der Bibliothek-Anwendung](screenshot/1.jpg)
-![Alternativer Login-Bildschirm](screenshot/2.jpg)
+![Login-Bildschirm der Bibliothek-Anwendung](screenshot/1.png)
+![Alternativer Login-Bildschirm](screenshot/2.png)
 
 ---
 
 **2. Buecher-Uebersicht (Katalog fuer Benutzer)**
-![Uebersicht des Buch-Katalogs](screenshot/3.jpg)
+![Uebersicht des Buch-Katalogs](screenshot/3.png)
 
 ---
 
 **3. "Meine Ausleihen" (Benutzer-Dashboard)**
-![Dashboard fuer Benutzer-Ausleihen](screenshot/4.jpg)
+![Dashboard fuer Benutzer-Ausleihen](screenshot/4.png)
 
 ---
 
 **4. Buecher-Uebersicht (Bibliothekar-Ansicht)**
-![Uebersicht des Buch-Katalogs aus Admin-Sicht](screenshot/5.jpg)
+![Uebersicht des Buch-Katalogs aus Admin-Sicht](screenshot/5.png)
 
 ---
 
 **5. Buch Hinzufuegen (Bibliothekar-Funktion)**
-![Formular zum Hinzufuegen eines neuen Buches](screenshot/6.jpg)
+![Formular zum Hinzufuegen eines neuen Buches](screenshot/6.png)
 
 ---
 
 **6. Ausleih-Management (Bibliothekar-Dashboard)**
-![Dashboard zur Verwaltung von Ausleihanfragen](screenshot/7.jpg)
-![Dashboard zur Verwaltung von Rueckgaben](screenshot/8.jpg)
+![Dashboard zur Verwaltung von Ausleihanfragen](screenshot/7.png)
+![Dashboard zur Verwaltung von Rueckgaben](screenshot/8.png)
 
 ---
 
 **7. Statistik-Ansicht (Bibliothekar-Funktion)**
-![Statistik-Seite mit Kuchendiagramm](screenshot/9.jpg)
+![Statistik-Seite mit Kuchendiagramm](screenshot/9.png)
