@@ -1,75 +1,53 @@
-# C++ Projekt: Bibliothek-Verwaltungssystem
+# C++ Projekt: LibraryPro - Bibliothek-Verwaltungssystem
 
 ## Projekt-Kontext
-
-Dies ist mein Abschlussprojekt fuer das Wahlmodul "C++ Fortschritte" an der Hochschule Niederrhein. Die Modulnote basierte ausschliesslich auf diesem Projekt.
-
-Es handelt sich um eine vollstaendige, grafische Desktop-Anwendung zur Verwaltung einer Bibliothek.
+Dies ist mein Abschlussprojekt für das Wahlpflichtmodul **"Fortgeschrittene C++ Programmierung"** an der Hochschule Niederrhein.
+Ich habe eine vollständige Desktop-Anwendung entwickelt, um die Verwaltung einer Bibliothek zu simulieren. Der Fokus lag dabei auf sauberer Objektorientierung und einer stabilen Architektur.
 
 ## Verwendete Technologien
 
-* **Kern-Logik:** C++
-* **UI-Framework:** Qt
-* **UI-Aufbau:** Die gesamte Benutzeroberflaeche wurde prozedural in C++ erstellt (ohne den Qt Designer).
-* **Styling:** QSS (Qt Style Sheets) zur visuellen Gestaltung der Komponenten.
+* **Sprache:** C++ (C++17 Standard)
+* **Framework:** Qt 6
+* **UI-Entwicklung:** Die Benutzeroberfläche wurde komplett im Code geschrieben – **ohne Qt Designer (kein Drag & Drop)**. Dadurch habe ich die volle Kontrolle über das Layout-Management und die Widget-Logik.
+* **Datenbank:** **SQLite** (lokale Einbindung, keine Server-Installation nötig).
+* **Design:** Eigenes QSS (Qt Style Sheets) für einen modernen Look.
 
-## Kern-Features
+## Datenbank & Speicher
+Das Programm nutzt eine lokale **SQLite-Datenbank**, damit alle Daten (Bücher, Nutzer, Ausleihen) auch nach einem Neustart erhalten bleiben. Über SQL-Abfragen werden die Daten verknüpft, sodass man z.B. die komplette Ausleih-Historie eines Nutzers sehen kann.
 
-Die Anwendung verfuegt ueber zwei separate Rollen mit unterschiedlichen Zugaengen und Rechten: **Benutzer** (Ausleiher) und **Bibliothekar** (Admin).
+## Features
+Die App unterscheidet zwischen zwei Rollen:
 
-### Features (Benutzer-Ansicht)
+### 👤 Für Benutzer (Ausleiher)
+* **Katalog:** Bücher durchsuchen und Verfügbarkeit prüfen.
+* **Ausleihen:** Bücher direkt per Klick anfragen.
+* **Dashboard:** Übersicht über alle eigenen Ausleihen (aktuell und historisch) sowie den Rückgabe-Status.
 
-* **Rollenbasierter Login:** Getrennte Anmeldebildschirme fuer Benutzer und Bibliothekare.
-* **Buecher-Katalog:** Eine Uebersicht aller verfuegbaren Buecher mit Cover, Beschreibung und Suchfunktion.
-* **Ausleih-Anfragen:** Benutzer koennen Anfragen stellen, um Buecher auszuleihen.
-* **"Meine Ausleihen":** Ein persoenliches Dashboard, das alle aktuellen und vergangenen Ausleihvorgaenge anzeigt (Status: Ausgeliehen, Zurueckgegeben, Abgelehnt).
-* **Aktionen:** Benutzer koennen Buecher zurueckgeben oder Verlaengerungen anfragen.
+### 🛡️ Für Bibliothekare (Admin)
+* **Verwaltung:** Neue Bücher anlegen, bearbeiten oder löschen (CRUD).
+* **Anfragen-Management:** Eingehende Ausleih-Anfragen von Nutzern genehmigen oder ablehnen.
+* **Rückgaben:** Zurückgebrachte Bücher im System erfassen.
+* **Statistik:** Ein Dashboard mit Diagramm zeigt den aktuellen Bestand und Status der Bibliothek.
 
-### Features (Bibliothekar-Ansicht / Admin-Panel)
+## Screenshots
 
-* **Buecher-Katalog (Admin):** Uebersicht mit erweiterten Optionen (Bearbeiten/Loeschen).
-* **Buch-Management:** Ein CRUD-Interface (Create, Read, Update, Delete) zum Hinzufuegen von Buechern.
-* **Ausleih-Management:** Ein Dashboard zur Verwaltung aller Ausleihanfragen (Genehmigen oder Ablehnen).
-* **Rueckgabe-Management:** Eine Uebersicht aller zurueckgegebenen Buecher.
-* **Statistik-Dashboard:** Eine grafische Uebersicht (Kuchendiagramm) ueber den Status aller Buecher.
+**(1) Login**
+![Login Screen](screenshot/1.png)
+![Login User](screenshot/2.png)
 
-## Screenshots der Anwendung
+**(2) Bücher-Katalog (Benutzer-Ansicht)**
+![Book Catalog](screenshot/3.png)
 
-*(Die folgenden Screenshots zeigen die verschiedenen Ansichten und Funktionen der fertigen Anwendung.)*
+**(3) Ausleih-Dashboard (User)**
+![My Loans](screenshot/4.png)
 
----
+**(4) Admin-Verwaltung**
+![Admin Catalog](screenshot/5.png)
+![Add Book Form](screenshot/6.png)
 
-**1. Login & Rollen-Auswahl**
-![Login-Bildschirm der Bibliothek-Anwendung](screenshot/1.png)
-![Alternativer Login-Bildschirm](screenshot/2.png)
+**(5) Anfragen & Rückgaben verwalten**
+![Loan Requests](screenshot/7.png)
+![Returns](screenshot/8.png)
 
----
-
-**2. Buecher-Uebersicht (Katalog fuer Benutzer)**
-![Uebersicht des Buch-Katalogs](screenshot/3.png)
-
----
-
-**3. "Meine Ausleihen" (Benutzer-Dashboard)**
-![Dashboard fuer Benutzer-Ausleihen](screenshot/4.png)
-
----
-
-**4. Buecher-Uebersicht (Bibliothekar-Ansicht)**
-![Uebersicht des Buch-Katalogs aus Admin-Sicht](screenshot/5.png)
-
----
-
-**5. Buch Hinzufuegen (Bibliothekar-Funktion)**
-![Formular zum Hinzufuegen eines neuen Buches](screenshot/6.png)
-
----
-
-**6. Ausleih-Management (Bibliothekar-Dashboard)**
-![Dashboard zur Verwaltung von Ausleihanfragen](screenshot/7.png)
-![Dashboard zur Verwaltung von Rueckgaben](screenshot/8.png)
-
----
-
-**7. Statistik-Ansicht (Bibliothekar-Funktion)**
-![Statistik-Seite mit Kuchendiagramm](screenshot/9.png)
+**(6) Statistik**
+![Statistics](screenshot/9.png)
